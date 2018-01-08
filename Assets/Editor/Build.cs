@@ -17,14 +17,14 @@ class Build
 
     static void BuildWindows()
     {
-        string pathToDeploy = "build/windows/";
+        string pathToDeploy = "build/windows/circleofwar.exe";
 
         BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.StandaloneWindows, BuildOptions.None);
     }
 
     static void BuildLinux()
     {
-        string pathToDeploy = "build/linux/";
+        string pathToDeploy = "build/linux/circleofwar.x86_64";
 
         BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.StandaloneLinuxUniversal, BuildOptions.None);
     }
