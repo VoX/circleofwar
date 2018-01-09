@@ -5,8 +5,8 @@ using UnityEngine.Networking;
 public class HUD : NetworkBehaviour {
 
 	Texture box;
-	
-	public TankCombat tc;
+
+    public FighterCombat fc;
 	
 	public Texture front;
 	public Texture back;
@@ -20,7 +20,7 @@ public class HUD : NetworkBehaviour {
 	void Start()
 	{
 		box = (Texture)Resources.Load ("box");
-		tc.EventTakeDamage += OnTakeDamage;
+		fc.EventTakeDamage += OnTakeDamage;
 	}
 	
 	void OnTakeDamage(int side, int damage)
@@ -46,13 +46,13 @@ public class HUD : NetworkBehaviour {
 		int myTeam = -1;
 		if (NetworkClient.active && ClientScene.localPlayers.Count > 0 && ClientScene.localPlayers[0].gameObject != null)
 		{
-			TankCombat localPlayerTc = ClientScene.localPlayers[0].gameObject.GetComponent<TankCombat>();
-			myTeam = localPlayerTc.team;
+			FighterCombat localPlayerFc = ClientScene.localPlayers[0].gameObject.GetComponent<FighterCombat>();
+			myTeam = localPlayerFc.team;
 		}
 		
 		// your team is green, other teams are red
 		Color teamColor = Color.white;
-		if (myTeam == tc.team)
+		if (myTeam == fc.team)
 		{
 			teamColor = Color.green;
 		}
@@ -63,14 +63,14 @@ public class HUD : NetworkBehaviour {
 		
 		// draw the name with a shadow (colored for buf)
 		GUI.color = Color.black;
-		GUI.Label(new Rect(pos.x-50, Screen.height - pos.y - 62, 150, 30), tc.tankName);
+		GUI.Label(new Rect(pos.x-50, Screen.height - pos.y - 62, 150, 30), fc.fighterName);
 		GUI.color = teamColor;
-		GUI.Label(new Rect(pos.x-51, Screen.height - pos.y - 61, 150, 30), tc.tankName);
+		GUI.Label(new Rect(pos.x-51, Screen.height - pos.y - 61, 150, 30), fc.fighterName);
 		
-		if (tc.alive && tc.tt != null)
+		if (fc.alive && fc.ft != null)
 		{
-			DrawBar (teamColor, pos, 40, tc.health, tc.tt.maxHealth);
-			DrawBar (Color.yellow, pos, 34, tc.heat, tc.tt.maxHeat);
+			DrawBar (teamColor, pos, 40, fc.health, fc.ft.maxHealth);
+			DrawBar (Color.yellow, pos, 34, fc.energy, fc.ft.maxEnergy);
 		}
 		else
 		{
@@ -84,10 +84,10 @@ public class HUD : NetworkBehaviour {
 			return;
 		
 		// draw direction damage indicators	
-		DrawArmour(new Rect(20, 100, 64, 32), front, tc.armorFront);
-		DrawArmour(new Rect(20, 210, 64, 32), back, tc.armorBack);
-		DrawArmour(new Rect(20, 136, 24, 72), left, tc.armorLeft);
-		DrawArmour(new Rect(60, 136, 24, 72), right, tc.armorRight);
+		/*DrawArmour(new Rect(20, 100, 64, 32), front, fc.armorFront);
+		DrawArmour(new Rect(20, 210, 64, 32), back, fc.armorBack);
+		DrawArmour(new Rect(20, 136, 24, 72), left, fc.armorLeft);
+		DrawArmour(new Rect(60, 136, 24, 72), right, fc.armorRight);*/
 		
 		if (damageTimer > Time.time)
 		{
@@ -107,10 +107,10 @@ public class HUD : NetworkBehaviour {
 		}
 		
 		GUI.color = Color.white;
-		GUI.Label(new Rect(5, 5, 180, 60), "Arrows to move, mouse buttons to fire. Escape to exit. Destroy three barrels.");
+		GUI.Label(new Rect(5, 5, 180, 60), "Arrows to move, mouse buftons to fire. Escape to exit. Destroy three barrels.");
 		
-		GUI.Label(new Rect(10, 250, 200, 20), "Turret Ammo: " + tc.ammunitionTurret + "/" + tc.tt.maxAmmunitionTurret );
-		GUI.Label(new Rect(10, 270, 200, 20), "Flame Ammo: " + tc.ammunitionMG + "/" + tc.tt.maxAmmunitionMG);
+		/*GUI.Label(new Rect(10, 250, 200, 20), "Turret Ammo: " + fc.ammunitionTurret + "/" + fc.ft.maxAmmunitionTurret );
+		GUI.Label(new Rect(10, 270, 200, 20), "Flame Ammo: " + fc.ammunitionMG + "/" + fc.ft.maxAmmunitionMG);*/
 		
 		GUI.Label (new Rect(200, 10, 200, 20), "Barrels: " + PlayGame.GetBarrelScore());
 		
@@ -175,7 +175,7 @@ public class HUD : NetworkBehaviour {
 	public void CmdFinishLevel()
 	{
 		NetworkManager.singleton.ServerChangeScene("forest");
-		//Manager.singleton.SwitchLevel("forest");
+		//Manager.singleton.SwifchLevel("forest");
 	}
 	
 }

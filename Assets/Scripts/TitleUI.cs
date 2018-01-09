@@ -31,7 +31,7 @@ public class TitleUI : MonoBehaviour {
 	{
 		GUI.DrawTexture(new Rect(
 			Screen.width/2 - titleTexture.width, 
-			Screen.height/2-titleTexture.height*2 - 150, 
+			Screen.height/2-titleTexture.height*2 - 120, 
 			titleTexture.width*2,
 			titleTexture.height*2), titleTexture);
 		

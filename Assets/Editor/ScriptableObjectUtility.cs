@@ -30,9 +30,9 @@ public static class ScriptableObjectUtility
 		Selection.activeObject = asset;
 	}
 	
-	[MenuItem("Assets/Create/TankType")]
+	/*[MenuItem("Assets/Create/FighterType")]
 	public static void CreateAsset ()
 	{
-		//ScriptableObjectUtility.CreateAsset<TankType> ();
-	}
+		//ScriptableObjectUtility.CreateAsset<FighterType> ();
+	}*/
 }
