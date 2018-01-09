@@ -92,11 +92,11 @@ public class PlayGame : NetworkBehaviour {
 		
 		if (Input.GetKeyDown(KeyCode.H))
 		{
-			// spawn heavy tank
-			GameObject tank = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.identity);
-			TankCombat tc = tank.GetComponent<TankCombat>();
-			tc.InitializeFromTankType(TankTypeManager.Random());
-			NetworkServer.Spawn(tank);
+			// spawn random fighter
+			GameObject fighter = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.identity);
+			FighterCombat fc = fighter.GetComponent<FighterCombat>();
+			fc.InitializeFromFighterType(FighterTypeManager.Random());
+			NetworkServer.Spawn(fighter);
 		}
 	}
 }
