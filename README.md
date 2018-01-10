@@ -5,6 +5,7 @@ Players compete to be the last surviving individual or team, utilizing a number 
 Unlike many of its cousins in the BR genre, Circle of War is less dependent on sneaking and spotting mechanics, and instead relies on fast-paced action combat.
 
 ## background
+In the darkness of the future, people are forced to kill one another inside of a circle. Because battle royale.
 
 ## design
 Circle of War will employ a simplistic top-down art style, point-to-shoot mechanics and WASD movement. Players will seek to outgun, outmaneuver, or simply outplay their opponents as they stay within the deadly Circle on a variety of maps.
