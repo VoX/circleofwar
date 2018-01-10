@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Networking;
 
 public class Missile : NetworkBehaviour {
 
 	public GameObject explosion;
 	public int damage;
-	public int team;
+	public string team;
 	
 	Vector3 startPos;	
 	float deathTimer;
@@ -46,7 +45,7 @@ public class Missile : NetworkBehaviour {
 		if (fc != null)
 		{
 			int side = GetHitSide(startPos, collider.gameObject.transform.position, collider.gameObject.transform.right);
-			fc.GotHitByMissile(side, damage, team);
+			fc.GotHit(side, damage, team);
 			destroyMe = true;
 			//Debug.Log ("Angle: " + angle + " AngleDir: " + angleDir + " side: " + side);			
 		}
@@ -55,7 +54,6 @@ public class Missile : NetworkBehaviour {
 		if (ex != null)
 		{
 			ex.Explode();
-			PlayGame.singleton.AddBarrelScore();
 			destroyMe = true;
 		}
 		

@@ -12,7 +12,7 @@ public class FighterMovement : NetworkBehaviour
     // server movement
     Vector2 moving;
 
-    bool firingMachineGun;
+    bool firingWeapon;
     bool m_focus = true;
 
     [SyncVar]
@@ -22,10 +22,10 @@ public class FighterMovement : NetworkBehaviour
     public GameObject explosion;
     public GameObject tracks;
     public FighterCombat fc;
-    public ParticleSystem machineGun;
 
     public float trackTimer;
 
+    float fireWeaponTimer;
     float turrentSendTimer = 0.0f;
     float turrentSendDelay = 0.1f;
 
@@ -93,6 +93,8 @@ public class FighterMovement : NetworkBehaviour
         m_focus = value;
     }
 
+
+
     void UpdateClient()
     {
         if (fc.alive && Time.time > trackTimer && GetComponent<Rigidbody2D>().velocity.magnitude > 0.001f)
@@ -112,37 +114,21 @@ public class FighterMovement : NetworkBehaviour
         if (!m_focus)
             return;
 
-
-        /*if (Manager.singleton.GetComponent<BafchModeStartup>().bafchMode)
-		{
-			AutoMove();
-			return;
-		}*/
-
         HandlePlayerMovement();
 
         if (Input.GetMouseButtonDown(0))
         {
-            fc.CmdFireTurret();
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (!firingMachineGun)
+            if (!firingWeapon)
             {
-                machineGun.Play();
-                firingMachineGun = true;
-                fc.CmdBeginFireMachineGun();
+                firingWeapon = true;
             }
         }
 
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(0))
         {
-            if (firingMachineGun)
+            if (firingWeapon)
             {
-                machineGun.Stop();
-                firingMachineGun = false;
-                fc.CmdStopFireMachineGun();
+                firingWeapon = false;
             }
         }
 
@@ -156,19 +142,26 @@ public class FighterMovement : NetworkBehaviour
         cpos.z = Camera.main.transform.position.z;
         Camera.main.transform.position = cpos;
 
+        Vector3 mouse_pos = Input.mousePosition;
+        mouse_pos.z = 0.0f;
+        Vector3 object_pos = Camera.main.WorldToScreenPoint(transform.position);
+        mouse_pos.x = mouse_pos.x - object_pos.x;
+        mouse_pos.y = mouse_pos.y - object_pos.y;
+        float angle = Mathf.Atan2(mouse_pos.y, mouse_pos.x) * Mathf.Rad2Deg;
+        Vector3 rotationVector = new Vector3(0, 0, angle);
+        upperBody.transform.rotation = Quaternion.Euler(rotationVector);
+
         // point upper body at mouse
         if (Time.time > turrentSendTimer)
         {
-            Vector3 mouse_pos = Input.mousePosition;
-            mouse_pos.z = 0.0f;
-            Vector3 object_pos = Camera.main.WorldToScreenPoint(transform.position);
-            mouse_pos.x = mouse_pos.x - object_pos.x;
-            mouse_pos.y = mouse_pos.y - object_pos.y;
-            float angle = Mathf.Atan2(mouse_pos.y, mouse_pos.x) * Mathf.Rad2Deg;
-            Vector3 rotationVector = new Vector3(0, 0, angle);
-            upperBody.transform.rotation = Quaternion.Euler(rotationVector);
             CmdRotateUpperBody(angle);
             turrentSendTimer = Time.time + turrentSendDelay;
+        }
+
+        if (firingWeapon && Time.time > fireWeaponTimer)
+        {
+            fireWeaponTimer = Time.time + .25f;
+            fc.CmdFire();
         }
     }
 
@@ -219,7 +212,6 @@ public class FighterMovement : NetworkBehaviour
         this.moving = moving;
     }
 
-    ///////////////////////////////////////////////////////////////
 
     float autoMoveTimer = 0;
     float autoTurret;
@@ -241,7 +233,6 @@ public class FighterMovement : NetworkBehaviour
 
             if (Random.Range(0, 4) == 1)
             {
-                fc.CmdFireTurret();
             }
         }
     }

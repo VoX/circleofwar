@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Networking;
 
 public class HUD : NetworkBehaviour {
@@ -19,7 +18,7 @@ public class HUD : NetworkBehaviour {
 
 	void Start()
 	{
-		box = (Texture)Resources.Load ("box");
+		box = (Texture)Resources.Load("box");
 		fc.EventTakeDamage += OnTakeDamage;
 	}
 	
@@ -43,7 +42,7 @@ public class HUD : NetworkBehaviour {
 	{
 		Vector3 pos = Camera.main.WorldToScreenPoint(transform.position);
 		
-		int myTeam = -1;
+		var myTeam = "-";
 		if (NetworkClient.active && ClientScene.localPlayers.Count > 0 && ClientScene.localPlayers[0].gameObject != null)
 		{
 			FighterCombat localPlayerFc = ClientScene.localPlayers[0].gameObject.GetComponent<FighterCombat>();
@@ -82,12 +81,7 @@ public class HUD : NetworkBehaviour {
 
 		if (!isLocalPlayer)
 			return;
-		
-		// draw direction damage indicators	
-		/*DrawArmour(new Rect(20, 100, 64, 32), front, fc.armorFront);
-		DrawArmour(new Rect(20, 210, 64, 32), back, fc.armorBack);
-		DrawArmour(new Rect(20, 136, 24, 72), left, fc.armorLeft);
-		DrawArmour(new Rect(60, 136, 24, 72), right, fc.armorRight);*/
+
 		
 		if (damageTimer > Time.time)
 		{
@@ -106,28 +100,8 @@ public class HUD : NetworkBehaviour {
 			
 		}
 		
-		GUI.color = Color.white;
-		GUI.Label(new Rect(5, 5, 180, 60), "Arrows to move, mouse buftons to fire. Escape to exit. Destroy three barrels.");
-		
 		/*GUI.Label(new Rect(10, 250, 200, 20), "Turret Ammo: " + fc.ammunitionTurret + "/" + fc.ft.maxAmmunitionTurret );
 		GUI.Label(new Rect(10, 270, 200, 20), "Flame Ammo: " + fc.ammunitionMG + "/" + fc.ft.maxAmmunitionMG);*/
-		
-		GUI.Label (new Rect(200, 10, 200, 20), "Barrels: " + PlayGame.GetBarrelScore());
-		
-		if (myTeam == 0) {
-			GUI.color = Color.green;
-		} else {
-			GUI.color = Color.red;
-		}
-		GUI.Label (new Rect(200, 30, 200, 20), "Control(0): " + PlayGame.GetControlScore(0));
-		
-		if (myTeam == 1) {
-			GUI.color = Color.green;
-		} else {
-			GUI.color = Color.red;
-		}
-		GUI.Label (new Rect(200, 50, 200, 20), "Control(1): " + PlayGame.GetControlScore(1));
-		
 		
 		GUI.color = Color.white;
 		if (NetworkClient.active)
@@ -138,23 +112,8 @@ public class HUD : NetworkBehaviour {
 		GUI.color = Color.white;
 		if (PlayGame.GetComplete())
 		{
-			GUI.Label (new Rect(Screen.width/2 - 60, Screen.height/2-100, 200, 40), "--- Level Complete ---\nPRESS SPACE TO RESTART");
+			GUI.Label (new Rect(Screen.width/2 - 60, Screen.height/2-100, 200, 40), "--- Winner Winner ---\nPRESS SPACE TO RESTART");
 		}
-	}
-	
-	void DrawArmour(Rect pos, Texture t, float value)
-	{
-		if (value >= 0.8f)	{
-			GUI.color = Color.green;
-		} else if (value >= 0.4f) {
-			GUI.color = Color.yellow;
-		} else if (value >= 0.1f) { 
-			GUI.color = Color.red;
-		} else {
-			GUI.color = Color.gray;
-		}
-		
-		GUI.DrawTexture (pos, t);
 	}
 	
 	void Update()
@@ -174,8 +133,7 @@ public class HUD : NetworkBehaviour {
 	[Command]
 	public void CmdFinishLevel()
 	{
-		NetworkManager.singleton.ServerChangeScene("forest");
-		//Manager.singleton.SwifchLevel("forest");
+		NetworkManager.singleton.ServerChangeScene("royale");
 	}
 	
 }

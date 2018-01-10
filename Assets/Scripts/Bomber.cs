@@ -14,26 +14,9 @@ public class Bomber : NetworkBehaviour {
 	
 	public int speed = 3;
 	
-	[SyncVar]
-	public int team;
-	
 	float bombTimer;
 	
 	Quaternion targetRotation;
-	
-	public override void OnStartClient()
-	{
-		if (ClientScene.localPlayers.Count > 0 && ClientScene.localPlayers[0].gameObject != null)
-		{
-			int myTeam = ClientScene.localPlayers[0].gameObject.GetComponent<FighterCombat>().team;
-			Color c = Color.green;
-			if (myTeam != team)
-			{
-				c = Color.red;
-			}
-			GetComponent<SpriteRenderer>().material.color = c;
-		}
-	}
 	
 	Vector2 CalcVelocity()
 	{
@@ -69,7 +52,6 @@ public class Bomber : NetworkBehaviour {
 		{
 			bombTimer = Time.time + 0.2f;
 			GameObject b = (GameObject)GameObject.Instantiate(bomb, transform.position, transform.rotation);
-			b.GetComponent<Bomb>().team = team;
 		}
 		
 		if (!NetworkServer.active)

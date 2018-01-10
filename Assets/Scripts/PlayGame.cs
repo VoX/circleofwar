@@ -1,25 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class PlayGame : NetworkBehaviour {
 
 	static public PlayGame singleton;
 
-	[SyncVar]
-	int barrelScore;
-	
-	[SyncVar]
-	int controlScoreOne;
-	
-	[SyncVar]
-	int controlScoreTwo;
-	
-	
-	[SyncVar]
-	public int controlComplete;
-	
 	[SyncVar]
 	bool complete;
 	
@@ -27,70 +13,22 @@ public class PlayGame : NetworkBehaviour {
 	{
 		singleton = this;
 	}
-		
-	public static int GetBarrelScore()
-	{
-		return singleton.barrelScore;
-	}
-	
-	public static int GetControlScore(int team)
-	{
-		if (team == 0)
-			return singleton.controlScoreOne;
-		else
-			return singleton.controlScoreTwo;
-	}
-	
+			
 	public static bool GetComplete()
 	{
 		return singleton.complete;
 	}
 	
-	public int AddBarrelScore()
-	{
-		barrelScore += 1;
-		if (barrelScore >= 3)
-			complete = true;
-			
-		return barrelScore;
-	}
-	
-	public int AddControlScore(int team, int amount)
-	{
-		if (team == 0)
-		{
-			controlScoreOne += amount;
-			if (controlScoreOne >= controlComplete)
-				complete = true;
-			
-			return controlScoreOne;
-		}
-		else
-		{
-			controlScoreTwo += amount;
-			if (controlScoreTwo >= controlComplete)
-				complete = true;
-			
-			return controlScoreTwo;		
-		}
-	}
-	
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape))
-		{
-			if (isServer)
-			{
-                NetworkManager.singleton.StopHost();
-            }
-			else
-			{
-                NetworkManager.singleton.client.Disconnect();
-                SceneManager.LoadScene("title");
-			}
-		}
-		
-		if (Input.GetKeyDown(KeyCode.H))
+        var fighters = Object.FindObjectsOfType<FighterCombat>();
+        if(fighters.Length > 1 && fighters.Count(x=>x.alive) <= 1)
+        {
+            singleton.complete = true;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.H))
 		{
 			// spawn random fighter
 			GameObject fighter = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.identity);

@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 
 public class Bomb : MonoBehaviour {
 
-	public int team;
 	public GameObject explosion;
 	public GameObject scorchMark;
 	
@@ -43,7 +42,7 @@ public class Bomb : MonoBehaviour {
 						if (hitFc != null)
 						{
 							int side = Missile.GetHitSide(transform.position, hit.transform.position, hit.transform.right);
-							hitFc.GotHitByMissile(side, 50, team);
+							hitFc.GotHit(side, 50, null);
 						}
 					}
 				}
