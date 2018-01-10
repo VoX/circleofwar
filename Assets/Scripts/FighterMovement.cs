@@ -22,6 +22,7 @@ public class FighterMovement : NetworkBehaviour
     public GameObject explosion;
     public GameObject tracks;
     public FighterCombat fc;
+    public InteractBasic interactZone;
 
     public float trackTimer;
 
@@ -59,7 +60,7 @@ public class FighterMovement : NetworkBehaviour
         }
         else
         {
-            moveSpeed.x *= 0.38f;
+            moveSpeed.x *= 0.18f;
         }
 
         // update y movement
@@ -81,7 +82,7 @@ public class FighterMovement : NetworkBehaviour
         }
         else
         {
-            moveSpeed.y *= 0.38f;
+            moveSpeed.y *= 0.18f;
         }
         
         Vector2 d = new Vector2(moveSpeed.x, moveSpeed.y);
@@ -135,6 +136,11 @@ public class FighterMovement : NetworkBehaviour
         if (Input.GetKey(KeyCode.F1))
         {
             fc.CmdKillSelf();
+        }
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            interactZone.Interact();
         }
 
         // keep camera on me

@@ -7,9 +7,8 @@ using System.Linq;
 public class FighterCombat : NetworkBehaviour
 {
     public GameObject turret;
-    public Transform muzzle;
-    public GameObject bulletPrefab;
     public FighterType ft;
+    public GunController gun;
 
     public delegate void TakeDamageDelegate(int side, int damage);
     public delegate void DieDelegate();
@@ -131,10 +130,7 @@ public class FighterCombat : NetworkBehaviour
         if (!alive)
             return;
 
-        GameObject bullet = (GameObject)GameObject.Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
-        bullet.GetComponent<Rigidbody2D>().velocity = muzzle.right * 30;
-        bullet.GetComponent<Missile>().damage = 20;
-        NetworkServer.Spawn(bullet);
+        gun.Fire(team);
     }
 
     [Command]
