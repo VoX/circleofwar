@@ -3,29 +3,29 @@ using System.Collections;
 
 public class CombatEffects : MonoBehaviour
 {
-	public TankCombat tc;
+	public FighterCombat fc;
 
 	public GameObject deathExplosion;
 	public GameObject scorchMark;
 	
 	void Start()
 	{
-		tc.EventDie += OnDeath;
-		tc.EventRespawn += OnRespawn;
+		fc.EventDie += OnDeath;
+		fc.EventRespawn += OnRespawn;
 	}
 	
 	
 	public void OnRespawn()
 	{
 		gameObject.GetComponent<SpriteRenderer>().enabled = true;
-		tc.turret.GetComponent<SpriteRenderer>().enabled = true;
+		fc.turret.GetComponent<SpriteRenderer>().enabled = true;
 	}
 	
 	public void OnDeath()
 	{
 	
 		gameObject.GetComponent<SpriteRenderer>().enabled = false;
-		tc.turret.GetComponent<SpriteRenderer>().enabled = false;
+		fc.turret.GetComponent<SpriteRenderer>().enabled = false;
 		
 		GameObject scorch = (GameObject)GameObject.Instantiate(scorchMark, transform.position, Quaternion.identity);
 		GameObject.Destroy(scorch, 10);

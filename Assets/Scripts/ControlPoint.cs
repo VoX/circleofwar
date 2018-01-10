@@ -21,7 +21,7 @@ public class ControlPoint : NetworkBehaviour
 	float scoreTimer;	
 	const int controlTime = 10;
 	
-	public List<TankCombat> targets = new List<TankCombat>();
+	public List<FighterCombat> targets = new List<FighterCombat>();
 	
 	public override void OnStartServer ()
 	{
@@ -30,10 +30,10 @@ public class ControlPoint : NetworkBehaviour
 	
 	void OnTriggerEnter2D(Collider2D collider)
 	{
-		TankCombat tc = collider.gameObject.GetComponent<TankCombat>();
-		if (tc != null)
+		FighterCombat fc = collider.gameObject.GetComponent<FighterCombat>();
+		if (fc != null)
 		{
-			targets.Add (tc);
+			targets.Add (fc);
 			
 			if (score < controlTime)
 				GetComponent<ParticleSystem>().Play();
@@ -42,10 +42,10 @@ public class ControlPoint : NetworkBehaviour
 
 	void OnTriggerExit2D(Collider2D collider)
 	{
-		TankCombat tc = collider.gameObject.GetComponent<TankCombat>();
-		if (tc != null)
+		FighterCombat fc = collider.gameObject.GetComponent<FighterCombat>();
+		if (fc != null)
 		{
-			targets.Remove(tc);
+			targets.Remove(fc);
 			if (targets.Count == 0)
 			{
 				GetComponent<ParticleSystem>().Stop();
@@ -80,10 +80,10 @@ public class ControlPoint : NetworkBehaviour
 			return;
 
 		var playerObj = controller.gameObject;
-		TankCombat myTC = playerObj.GetComponent<TankCombat>();
+		FighterCombat myFc = playerObj.GetComponent<FighterCombat>();
 		if (owningTeam != -1)
 		{
-			if (myTC.team == owningTeam)
+			if (myFc.team == owningTeam)
 			{
 				owningColor = Color.green;
 			}
@@ -96,7 +96,7 @@ public class ControlPoint : NetworkBehaviour
 		
 		if (tryingTeam != -1)
 		{
-			if (myTC.team == tryingTeam)
+			if (myFc.team == tryingTeam)
 			{
 				tryingColor = Color.green;
 			}
@@ -140,9 +140,9 @@ public class ControlPoint : NetworkBehaviour
 		tryingTeam = foundTeam;
 		// find number of players of foundTeam on the point
 		int count = 0;
-		foreach (TankCombat tc in targets)
+		foreach (FighterCombat fc in targets)
 		{
-			if (tc.alive && tc.team == foundTeam)
+			if (fc.alive && fc.team == foundTeam)
 				count += 1;
 		}
 		

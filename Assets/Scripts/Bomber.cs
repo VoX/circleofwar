@@ -25,7 +25,7 @@ public class Bomber : NetworkBehaviour {
 	{
 		if (ClientScene.localPlayers.Count > 0 && ClientScene.localPlayers[0].gameObject != null)
 		{
-			int myTeam = ClientScene.localPlayers[0].gameObject.GetComponent<TankCombat>().team;
+			int myTeam = ClientScene.localPlayers[0].gameObject.GetComponent<FighterCombat>().team;
 			Color c = Color.green;
 			if (myTeam != team)
 			{

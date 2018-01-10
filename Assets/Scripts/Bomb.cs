@@ -39,11 +39,11 @@ public class Bomb : MonoBehaviour {
 					Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 2.0f);
 					foreach (var hit in hits)
 					{
-						TankCombat hitTc = hit.GetComponent<TankCombat>();
-						if (hitTc != null)
+						FighterCombat hitFc = hit.GetComponent<FighterCombat>();
+						if (hitFc != null)
 						{
 							int side = Missile.GetHitSide(transform.position, hit.transform.position, hit.transform.right);
-							hitTc.GotHitByMissile(side, 50, team);
+							hitFc.GotHitByMissile(side, 50, team);
 						}
 					}
 				}

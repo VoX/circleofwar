@@ -42,11 +42,11 @@ public class Missile : NetworkBehaviour {
 		
 		bool destroyMe = false;		
 		
-		TankCombat tc = collider.gameObject.GetComponent<TankCombat>();
-		if (tc != null)
+		FighterCombat fc = collider.gameObject.GetComponent<FighterCombat>();
+		if (fc != null)
 		{
 			int side = GetHitSide(startPos, collider.gameObject.transform.position, collider.gameObject.transform.right);
-			tc.GotHitByMissile(side, damage, team);
+			fc.GotHitByMissile(side, damage, team);
 			destroyMe = true;
 			//Debug.Log ("Angle: " + angle + " AngleDir: " + angleDir + " side: " + side);			
 		}

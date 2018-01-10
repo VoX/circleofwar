@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class AirStrike : NetworkBehaviour
 {
 	public GameObject bomber;
-	public TankCombat tc;
+	public FighterCombat fc;
 	public bool pendingStrike;
 	
 	bool mouseDown;
@@ -65,7 +65,7 @@ public class AirStrike : NetworkBehaviour
 	[Command]
 	public void CmdStrike(Vector2[] strikePath)
 	{
-		if (!tc.alive)
+		if (!fc.alive)
 			return;
 			
 		if (numStrikes <= 0)
@@ -82,7 +82,7 @@ public class AirStrike : NetworkBehaviour
 		
 		GameObject b = (GameObject)GameObject.Instantiate(bomber, strikePath[0], Quaternion.identity);
 		b.GetComponent<Bomber>().FollowPath(strikePath);
-		b.GetComponent<Bomber>().team = tc.team;
+		b.GetComponent<Bomber>().team = fc.team;
 		NetworkServer.Spawn(b);
 	}
 	
