@@ -9,6 +9,7 @@ public class Missile : NetworkBehaviour {
 	
 	Vector3 startPos;	
 	float deathTimer;
+    [SerializeField]
 	float lifeTime = 1.0f;
 	
 	public override void OnStartClient()
