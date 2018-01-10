@@ -25,9 +25,9 @@ In order to enhance the top-down gameplay style, we are considering a variety of
 Circle of War will add a twist to the Battle Royale genre by including player classes.
 A player will be able to choose their class before each round.
 The bonuses conferred by a class are negligible at the onset of a round, but may become potent if a player collects many Power-Ups in the round.
-### speed
+*### speed
 Bonuses to movement speed and sprinting, delicate
-### strength
+*### strength
 Bonuses to health and armor, slow
-### stealth (potential)
+*### stealth (potential)
 Line of sight abilities
