@@ -7,6 +7,7 @@ public class GunType : ScriptableObject
 {
     public string gunTypeName;
     public GameObject bulletPrefab;
+    public GameObject pickupPrefab;
 
     public int startMaxAmmo;
     public int extMaxAmmo;
@@ -14,6 +15,8 @@ public class GunType : ScriptableObject
     public float fireRate;
     public float shotSpeed;
     public float spread;
+    public bool splash;
+    public int splashCount;
 
     public int damage;
 }

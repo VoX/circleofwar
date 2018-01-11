@@ -6,10 +6,12 @@ public class HUD : NetworkBehaviour {
 	Texture box;
 
     public FighterCombat fc;
+    public AmmoUI aUI;
 	
 	float damageTimer;
 	int damageAmount;
 	int damageSide;
+    
 
 	void Start()
 	{
@@ -88,11 +90,22 @@ public class HUD : NetworkBehaviour {
 			GUI.Label(r, "[" + damageAmount + "]");
 			
 		}
-		
-		/*GUI.Label(new Rect(10, 250, 200, 20), "Turret Ammo: " + fc.ammunitionTurret + "/" + fc.ft.maxAmmunitionTurret );
+
+        GUI.color = Color.grey;
+        GUI.Box(new Rect(Screen.width - 80, Screen.height - 65, 80, 65), "");
+        if (fc.gunController.EquippedGun != null)
+        {
+            GUI.color = Color.white;
+            GUI.Label(new Rect(Screen.width-75, Screen.height-60, 75, 30), fc.gunController.EquippedGun.gunTypeName);
+            GUI.Label(new Rect(Screen.width-75, Screen.height-30, 75, 30), fc.gunController.ammo + "/" + fc.gunController.maxAmmo);
+        }
+
+
+
+        /*GUI.Label(new Rect(10, 250, 200, 20), "Turret Ammo: " + fc.ammunitionTurret + "/" + fc.ft.maxAmmunitionTurret );
 		GUI.Label(new Rect(10, 270, 200, 20), "Flame Ammo: " + fc.ammunitionMG + "/" + fc.ft.maxAmmunitionMG);*/
-		
-		GUI.color = Color.white;
+
+        GUI.color = Color.white;
 		if (NetworkClient.active)
 		{
 			//GUI.Label(new Rect(5, 5, 180, 60), "RTT: " + NetworkClient.allClients[0].GetRTT());
@@ -117,7 +130,7 @@ public class HUD : NetworkBehaviour {
 				CmdFinishLevel();
 			}
 		}
-	}
+    }
 	
 	[Command]
 	public void CmdFinishLevel()

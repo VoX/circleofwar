@@ -40,6 +40,16 @@ public class PlayGame : NetworkBehaviour {
         }
     }
 
+    [Server]
+    void SpawnWeapons()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            var spawnWeap = FighterNetManager.singleton.SpawnWeapon();
+            NetworkServer.Spawn(spawnWeap);
+        }
+    }
+
     [ServerCallback]
     void Update()
 	{
@@ -51,6 +61,7 @@ public class PlayGame : NetworkBehaviour {
         if (fighters.Count() == 1)
         {
             SpawnTestPlayers();
+            SpawnWeapons();
             fighters = FindObjectsOfType<FighterCombat>();
         }
 	}
