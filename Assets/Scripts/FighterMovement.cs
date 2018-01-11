@@ -257,6 +257,7 @@ public class FighterMovement : NetworkBehaviour
             float moveY = (Random.Range(-10, 10) * 0.1f);
             Vector2 movement = new Vector2(moveX, moveY);
             movement.Normalize();
+            
 
             CmdWalk(movement);
             autoMoveTimer = Time.time + Random.Range(.5f, 4f);

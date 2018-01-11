@@ -6,12 +6,14 @@ using System.Collections.Generic;
 public class PlayGame : NetworkBehaviour {
 
 	static public PlayGame singleton;
+    IEnumerable<FighterCombat> fighters;
 
     [SyncVar]
     bool complete = false;
 
     private void Start()
     {
+        fighters = FindObjectsOfType<FighterCombat>();
         singleton = this;
     }
 
@@ -28,7 +30,7 @@ public class PlayGame : NetworkBehaviour {
     void SpawnTestPlayers()
     {
         Debug.Log("Spawning Test Players");
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             var autoFighter = FighterNetManager.singleton.SpawnPlayer();
             FighterMovement fm = autoFighter.GetComponent<FighterMovement>();
@@ -39,15 +41,15 @@ public class PlayGame : NetworkBehaviour {
 
     void Update()
 	{
-        var fighters = FighterNetManager.singleton.fighters;
-        if(fighters.Count > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
+        if(fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
         {
             singleton.complete = true;
         }
 
-        if (fighters.Count == 1 && FighterNetManager.singleton.mode == "local")
+        if (fighters.Count() == 1)
         {
             SpawnTestPlayers();
+            fighters = FindObjectsOfType<FighterCombat>();
         }
 	}
 }

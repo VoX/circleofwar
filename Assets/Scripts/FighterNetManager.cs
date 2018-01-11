@@ -8,8 +8,6 @@ public class FighterNetManager : NetworkManager
 {
     public new static FighterNetManager singleton;
 
-    public List<GameObject> fighters = new List<GameObject>();
-
     int port = 34920;
 
     bool IsHeadless()
@@ -78,7 +76,6 @@ public class FighterNetManager : NetworkManager
         GameObject fighter = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, GetSpawn(), Quaternion.identity);
         FighterCombat fc = fighter.GetComponent<FighterCombat>();
         fc.InitializeFromFighterType(FighterTypeManager.Random());
-        fighters.Add(fighter);
         return fighter;
     }
 
