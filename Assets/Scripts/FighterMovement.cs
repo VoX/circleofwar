@@ -12,6 +12,8 @@ public class FighterMovement : NetworkBehaviour
     // server movement
     Vector2 moving;
 
+    public bool autoMove = false;
+
     bool firingWeapon;
     bool m_focus = true;
 
@@ -41,6 +43,10 @@ public class FighterMovement : NetworkBehaviour
 
     void UpdateServer()
     {
+        if (!fc.alive)
+        {
+            return;
+        }
         // update x movement
         if (moving.x > 0)
         {
@@ -87,6 +93,11 @@ public class FighterMovement : NetworkBehaviour
         
         Vector2 d = new Vector2(moveSpeed.x, moveSpeed.y);
         GetComponent<Rigidbody2D>().velocity = d;
+
+        if (autoMove)
+        {
+            AutoMove();
+        }
     }
 
     void OnApplicationFocus(bool value)
@@ -114,6 +125,11 @@ public class FighterMovement : NetworkBehaviour
 
         if (!m_focus)
             return;
+
+        if (!fc.alive)
+        {
+            return;
+        }
 
         HandlePlayerMovement();
 
@@ -164,7 +180,15 @@ public class FighterMovement : NetworkBehaviour
             turrentSendTimer = Time.time + turrentSendDelay;
         }
 
-        if (firingWeapon && Time.time > fireWeaponTimer)
+        if (firingWeapon)
+        {
+            FireWeapon();
+        }
+    }
+
+    void FireWeapon()
+    {
+        if (Time.time > fireWeaponTimer)
         {
             fireWeaponTimer = Time.time + .25f;
             fc.CmdFire();
@@ -235,12 +259,9 @@ public class FighterMovement : NetworkBehaviour
             movement.Normalize();
 
             CmdWalk(movement);
-            autoMoveTimer = Time.time + 1;
-
-            if (Random.Range(0, 4) == 1)
-            {
-            }
+            autoMoveTimer = Time.time + Random.Range(.5f, 4f);
         }
+        FireWeapon();
     }
 
     Quaternion TrackRotate(Vector2 moveVect)

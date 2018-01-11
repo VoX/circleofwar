@@ -1,40 +1,53 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Linq;
+using System.Collections.Generic;
 
 public class PlayGame : NetworkBehaviour {
 
 	static public PlayGame singleton;
 
-	[SyncVar]
-	bool complete;
-	
-	void Awake () 
+    [SyncVar]
+    bool complete = false;
+
+    private void Start()
+    {
+        singleton = this;
+    }
+
+    void Awake () 
 	{
-		singleton = this;
+		
 	}
 			
 	public static bool GetComplete()
 	{
 		return singleton.complete;
 	}
-	
-	void Update()
+
+    void SpawnTestPlayers()
+    {
+        Debug.Log("Spawning Test Players");
+        for (int i = 0; i < 20; i++)
+        {
+            var autoFighter = FighterNetManager.singleton.SpawnPlayer();
+            FighterMovement fm = autoFighter.GetComponent<FighterMovement>();
+            fm.autoMove = true;
+            NetworkServer.Spawn(autoFighter);
+        }
+    }
+
+    void Update()
 	{
-        var fighters = Object.FindObjectsOfType<FighterCombat>();
-        if(fighters.Length > 1 && fighters.Count(x=>x.alive) <= 1)
+        var fighters = FighterNetManager.singleton.fighters;
+        if(fighters.Count > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
         {
             singleton.complete = true;
         }
 
-
-        if (Input.GetKeyDown(KeyCode.H))
-		{
-			// spawn random fighter
-			GameObject fighter = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, Vector3.zero, Quaternion.identity);
-			FighterCombat fc = fighter.GetComponent<FighterCombat>();
-			fc.InitializeFromFighterType(FighterTypeManager.Random());
-			NetworkServer.Spawn(fighter);
-		}
+        if (fighters.Count == 1 && FighterNetManager.singleton.mode == "local")
+        {
+            SpawnTestPlayers();
+        }
 	}
 }

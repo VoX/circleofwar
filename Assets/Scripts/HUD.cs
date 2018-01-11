@@ -7,11 +7,6 @@ public class HUD : NetworkBehaviour {
 
     public FighterCombat fc;
 	
-	public Texture front;
-	public Texture back;
-	public Texture left;
-	public Texture right;
-	
 	float damageTimer;
 	int damageAmount;
 	int damageSide;
@@ -53,20 +48,17 @@ public class HUD : NetworkBehaviour {
 		Color teamColor = Color.white;
 		if (myTeam == fc.team)
 		{
-			teamColor = Color.green;
-		}
-		else
-		{
-			teamColor = Color.red;
-		}
-		
-		// draw the name with a shadow (colored for buf)
-		GUI.color = Color.black;
-		GUI.Label(new Rect(pos.x-50, Screen.height - pos.y - 62, 150, 30), fc.fighterName);
-		GUI.color = teamColor;
-		GUI.Label(new Rect(pos.x-51, Screen.height - pos.y - 61, 150, 30), fc.fighterName);
-		
-		if (fc.alive && fc.ft != null)
+            // draw the name with a shadow (colored for buf)
+            GUI.color = Color.black;
+            GUI.Label(new Rect(pos.x - 50, Screen.height - pos.y - 62, 150, 30), fc.fighterName);
+            GUI.color = Color.green;
+            GUI.Label(new Rect(pos.x - 51, Screen.height - pos.y - 61, 150, 30), fc.fighterName);
+        }
+
+        if (!isLocalPlayer)
+            return;
+
+        if (fc.alive && fc.ft != null)
 		{
 			DrawBar (teamColor, pos, 40, fc.health, fc.ft.maxHealth);
 			DrawBar (Color.yellow, pos, 34, fc.energy, fc.ft.maxEnergy);
@@ -79,11 +71,8 @@ public class HUD : NetworkBehaviour {
 			GUI.Label(new Rect(pos.x-41, Screen.height - pos.y - 41, 150, 30), "YOU ARE DEAD");
 		}
 
-		if (!isLocalPlayer)
-			return;
 
-		
-		if (damageTimer > Time.time)
+        if (damageTimer > Time.time)
 		{
 			Rect r = new Rect(0,0,0,0);
 			if (damageSide == 0) {
@@ -106,7 +95,7 @@ public class HUD : NetworkBehaviour {
 		GUI.color = Color.white;
 		if (NetworkClient.active)
 		{
-			GUI.Label(new Rect(5, 5, 180, 60), "RTT: " + NetworkClient.allClients[0].GetRTT());
+			//GUI.Label(new Rect(5, 5, 180, 60), "RTT: " + NetworkClient.allClients[0].GetRTT());
 		}
 		
 		GUI.color = Color.white;
@@ -133,7 +122,7 @@ public class HUD : NetworkBehaviour {
 	[Command]
 	public void CmdFinishLevel()
 	{
-		NetworkManager.singleton.ServerChangeScene("royale");
+		NetworkManager.singleton.ServerChangeScene("Royale");
 	}
 	
 }

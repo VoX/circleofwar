@@ -3,7 +3,7 @@
 class Build
 {
     static string[] scenes = {"Assets/Scenes/Title.unity",
-                            "Assets/scenes/royale.unity"};
+                            "Assets/scenes/Royale.unity"};
 
     static void BuildWebGl()
     {
