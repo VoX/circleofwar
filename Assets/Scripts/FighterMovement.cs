@@ -10,6 +10,7 @@ public class FighterMovement : NetworkBehaviour
     Vector2 oldMoveForce = new Vector2(0,0);
 
     // server movement
+    [SyncVar]
     Vector2 moving;
 
     public bool autoMove = false;
@@ -159,6 +160,11 @@ public class FighterMovement : NetworkBehaviour
             interactZone.Interact();
         }
 
+        if (Input.GetKey(KeyCode.R))
+        {
+            fc.CmdReload();
+        }
+
         // keep camera on me
         Vector3 cpos = transform.position;
         cpos.z = Camera.main.transform.position.z;
@@ -190,7 +196,7 @@ public class FighterMovement : NetworkBehaviour
     {
         if (Time.time > fireWeaponTimer)
         {
-            fireWeaponTimer = Time.time + .25f;
+            fireWeaponTimer = Time.time + fc.gunController.EquippedGun.fireRate;
             fc.CmdFire();
         }
     }
@@ -259,6 +265,8 @@ public class FighterMovement : NetworkBehaviour
             Vector2 movement = new Vector2(moveX, moveY);
             movement.Normalize();
 
+            if (fc.gunController.ammo == 0)
+                fc.CmdReload();
 
             CmdWalk(movement);
             autoMoveTimer = Time.time + Random.Range(.5f, 4f);

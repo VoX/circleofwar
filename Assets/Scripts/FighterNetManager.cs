@@ -8,6 +8,9 @@ public class FighterNetManager : NetworkManager
 {
     public new static FighterNetManager singleton;
 
+    [SerializeField]
+    GunType[] weapons;
+
     int port = 34920;
 
     bool IsHeadless()
@@ -77,6 +80,18 @@ public class FighterNetManager : NetworkManager
         FighterCombat fc = fighter.GetComponent<FighterCombat>();
         fc.InitializeFromFighterType(FighterTypeManager.Random());
         return fighter;
+    }
+
+    public GameObject SpawnWeapon()
+    {
+        if (weapons.Length > 0)
+        {
+            GunType thisWeapon = weapons[UnityEngine.Random.Range(0, weapons.Length)];
+            // spawn random weapon
+            GameObject weapon = Instantiate(thisWeapon.pickupPrefab, GetSpawn(), Quaternion.identity);
+            return weapon;
+        }
+        return null;
     }
 
     public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)

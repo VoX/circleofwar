@@ -8,7 +8,8 @@ public class FighterCombat : NetworkBehaviour
 {
     public GameObject turret;
     public FighterType ft;
-    public GunController gun;
+    public GunController gunController;
+    public GunType gun; //for testing purposes
 
     public delegate void TakeDamageDelegate(int side, int damage);
     public delegate void DieDelegate();
@@ -65,6 +66,11 @@ public class FighterCombat : NetworkBehaviour
         FighterType found = FighterTypeManager.Lookup(fighterType);
         ft = found;
         GetComponent<SpriteRenderer>().sprite = ft.skinBody;
+    }
+
+    private void Awake() // for testing purposes
+    {
+        gun = gunController.EquippedGun;
     }
 
     [ServerCallback]
@@ -130,7 +136,19 @@ public class FighterCombat : NetworkBehaviour
         if (!alive)
             return;
 
-        gun.Fire(team);
+        gunController.Fire(team);
+    }
+
+    [Command]
+    public void CmdReload()
+    {
+        if (PlayGame.GetComplete())
+            return;
+
+        if (!alive)
+            return;
+
+        gunController.Reload();
     }
 
     [Command]

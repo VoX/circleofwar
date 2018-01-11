@@ -14,8 +14,8 @@ public class Missile : NetworkBehaviour {
 	
 	public override void OnStartClient()
 	{
-		GameObject exp = (GameObject)GameObject.Instantiate(explosion, transform.position, Quaternion.identity);
-		GameObject.Destroy(exp, 1.0f);
+		GameObject exp = Instantiate(explosion, transform.position, Quaternion.identity);
+		Destroy(exp, 1.0f);
 	}
 	
 	public override void OnStartServer()
@@ -37,12 +37,13 @@ public class Missile : NetworkBehaviour {
 	[ServerCallback]
 	void OnTriggerEnter2D(Collider2D collider)
 	{
+        Debug.Log("name: " + gameObject.name + ", collider: " + collider.name);
 		if (deathTimer == 0)
 			return;
 		
 		bool destroyMe = false;		
 		
-		FighterCombat fc = collider.gameObject.GetComponent<FighterCombat>();
+		FighterCombat fc = collider.gameObject.GetComponentInParent<FighterCombat>();
 		if (fc != null)
 		{
 			int side = GetHitSide(startPos, collider.gameObject.transform.position, collider.gameObject.transform.right);
@@ -69,8 +70,8 @@ public class Missile : NetworkBehaviour {
 	public override void OnNetworkDestroy()
 	{
 		// create explosion
-		GameObject exp = (GameObject)GameObject.Instantiate(explosion, transform.position, Quaternion.identity);
-		GameObject.Destroy(exp, 1.0f);	
+		GameObject exp = Instantiate(explosion, transform.position, Quaternion.identity);
+		Destroy(exp, 1.0f);	
 	}
 	
 	// left is positive. right is negative
