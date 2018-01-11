@@ -246,6 +246,7 @@ public class FighterMovement : NetworkBehaviour
     float autoMoveTimer = 0;
     float autoTurret;
 
+    [Server]
     void AutoMove()
     {
         if (Time.time > autoMoveTimer)
@@ -257,7 +258,7 @@ public class FighterMovement : NetworkBehaviour
             float moveY = (Random.Range(-10, 10) * 0.1f);
             Vector2 movement = new Vector2(moveX, moveY);
             movement.Normalize();
-            
+
 
             CmdWalk(movement);
             autoMoveTimer = Time.time + Random.Range(.5f, 4f);

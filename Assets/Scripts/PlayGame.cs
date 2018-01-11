@@ -27,6 +27,7 @@ public class PlayGame : NetworkBehaviour {
 		return singleton.complete;
 	}
 
+    [Server]
     void SpawnTestPlayers()
     {
         Debug.Log("Spawning Test Players");
@@ -39,6 +40,7 @@ public class PlayGame : NetworkBehaviour {
         }
     }
 
+    [ServerCallback]
     void Update()
 	{
         if(fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
