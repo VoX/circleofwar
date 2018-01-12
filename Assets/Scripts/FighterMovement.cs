@@ -169,8 +169,7 @@ public class FighterMovement : NetworkBehaviour
 
         if (Input.GetKey(KeyCode.R))
         {
-            fc.
-                CmdReload();
+            fc.CmdReload();
         }
 
         // keep camera on me

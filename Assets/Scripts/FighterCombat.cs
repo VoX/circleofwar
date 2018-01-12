@@ -143,13 +143,8 @@ public class FighterCombat : NetworkBehaviour
         Fire();
     }
 
+    [Server]
     void Reload()
-    {
-
-    }
-
-    [Command]
-    public void CmdReload()
     {
         if (PlayGame.GetComplete())
             return;
@@ -158,6 +153,12 @@ public class FighterCombat : NetworkBehaviour
             return;
 
         gunController.Reload();
+    }
+
+    [Command]
+    public void CmdReload()
+    {
+        Reload();
     }
 
     [Command]
