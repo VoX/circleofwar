@@ -33,6 +33,11 @@ public class FighterMovement : NetworkBehaviour
     float turrentSendTimer = 0.0f;
     float turrentSendDelay = 0.1f;
 
+    void Awake()
+    {
+        autoDeathTime = Time.time + Random.Range(5, 60);
+    }
+
     void Update()
     {
         if (NetworkServer.active)
@@ -46,6 +51,8 @@ public class FighterMovement : NetworkBehaviour
     {
         if (!fc.alive)
         {
+            GetComponent<Rigidbody2D>().drag = 5;
+            GetComponent<Rigidbody2D>().angularDrag = 5;
             return;
         }
         // update x movement
@@ -112,7 +119,7 @@ public class FighterMovement : NetworkBehaviour
     {
         if (fc.alive && Time.time > trackTimer && GetComponent<Rigidbody2D>().velocity.magnitude > 0.001f)
         {
-            GameObject footprint = (GameObject)GameObject.Instantiate(tracks, transform.position, TrackRotate(moveSpeed));
+            GameObject footprint = (GameObject)GameObject.Instantiate(tracks, transform.position, TrackRotate(GetComponent<Rigidbody2D>().velocity));
             GameObject.Destroy(footprint, 1.5f);
             trackTimer = Time.time + 0.25f;
         }
@@ -162,7 +169,8 @@ public class FighterMovement : NetworkBehaviour
 
         if (Input.GetKey(KeyCode.R))
         {
-            fc.CmdReload();
+            fc.
+                CmdReload();
         }
 
         // keep camera on me
@@ -219,8 +227,8 @@ public class FighterMovement : NetworkBehaviour
         }
     }
 
-    [Command]
-    public void CmdRotateUpperBody(float angle)
+    [Server]
+    void RotateUpperBody(float angle)
     {
         if (!fc.alive)
             return;
@@ -233,10 +241,14 @@ public class FighterMovement : NetworkBehaviour
         upperBodyAngle = angle;
     }
 
-
-
     [Command]
-    public void CmdWalk(Vector2 moving)
+    public void CmdRotateUpperBody(float angle)
+    {
+        RotateUpperBody(angle);
+    }
+
+    [Server]
+    void Walk(Vector2 moving)
     {
         if (PlayGame.GetComplete() || !fc.alive)
         {
@@ -248,17 +260,27 @@ public class FighterMovement : NetworkBehaviour
         this.moving = moving;
     }
 
+    [Command]
+    public void CmdWalk(Vector2 moving)
+    {
+        Walk(moving);
+    }
 
     float autoMoveTimer = 0;
     float autoTurret;
+    float autoDeathTime;
 
     [Server]
     void AutoMove()
     {
+        if(Time.time > autoDeathTime)
+        {
+            fc.TakeDamage(50000);
+        }
         if (Time.time > autoMoveTimer)
         {
             autoTurret += Random.Range(-90, 90);
-            CmdRotateUpperBody(autoTurret);
+            RotateUpperBody(autoTurret);
 
             float moveX = (Random.Range(-10, 10) * 0.1f);
             float moveY = (Random.Range(-10, 10) * 0.1f);
@@ -266,9 +288,9 @@ public class FighterMovement : NetworkBehaviour
             movement.Normalize();
 
             if (fc.gunController.ammo == 0)
-                fc.CmdReload();
+                fc.gunController.Reload();
 
-            CmdWalk(movement);
+            Walk(movement);
             autoMoveTimer = Time.time + Random.Range(.5f, 4f);
         }
         FireWeapon();

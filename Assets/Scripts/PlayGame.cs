@@ -53,7 +53,12 @@ public class PlayGame : NetworkBehaviour {
     [ServerCallback]
     void Update()
 	{
-        if(fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
+        if(fighters.Count() < 1)
+        {
+            fighters = FindObjectsOfType<FighterCombat>();
+        }
+
+        if (fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
         {
             singleton.complete = true;
         }

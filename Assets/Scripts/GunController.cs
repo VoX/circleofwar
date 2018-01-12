@@ -7,7 +7,10 @@ public class GunController : NetworkBehaviour
 {
     [SerializeField]
     GunType equippedGun;
+
+    [SyncVar]
     public int ammo;
+    [SyncVar]
     public int maxAmmo;
     public Transform muzzle;
 
@@ -27,7 +30,6 @@ public class GunController : NetworkBehaviour
         }
     }
 
-    [Server]
     public void Fire(string team)
     {
         if (equippedGun != null && ammo > 0)

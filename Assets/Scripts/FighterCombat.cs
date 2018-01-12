@@ -107,7 +107,7 @@ public class FighterCombat : NetworkBehaviour
 
 
     [Server]
-    void TakeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         if (!alive)
             return;
@@ -126,9 +126,7 @@ public class FighterCombat : NetworkBehaviour
         }
     }
 
-
-    [Command]
-    public void CmdFire()
+    public void Fire()
     {
         if (PlayGame.GetComplete())
             return;
@@ -137,6 +135,17 @@ public class FighterCombat : NetworkBehaviour
             return;
 
         gunController.Fire(team);
+    }
+
+    [Command]
+    public void CmdFire()
+    {
+        Fire();
+    }
+
+    void Reload()
+    {
+
     }
 
     [Command]
