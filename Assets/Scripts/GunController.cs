@@ -63,7 +63,7 @@ public class GunController : NetworkBehaviour
             {
                 GameObject bullet = Instantiate(equippedGun.bulletPrefab, muzzle.position, muzzle.rotation);
                 bullet.transform.Rotate(new Vector3(0f, 0f, (Random.Range(-equippedGun.spread, equippedGun.spread))));
-                bullet.GetComponent<Rigidbody2D>().velocity = muzzle.right * equippedGun.shotSpeed;
+                bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.right * equippedGun.shotSpeed;
                 bullet.GetComponent<Missile>().damage = equippedGun.damage;
                 bullet.GetComponent<Missile>().team = team;
                 NetworkServer.Spawn(bullet);
