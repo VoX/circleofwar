@@ -164,7 +164,7 @@ public class FighterMovement : NetworkBehaviour
 
         if (Input.GetKey(KeyCode.E))
         {
-            interactZone.Interact();
+            interactZone.CmdInteract();
         }
 
         if (Input.GetKey(KeyCode.R))

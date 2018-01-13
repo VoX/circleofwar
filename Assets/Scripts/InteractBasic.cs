@@ -30,7 +30,8 @@ public class InteractBasic : NetworkBehaviour
         cooldown = false;
     }
 
-    public void Interact()
+    [Command]
+    public void CmdInteract()
     {
         if (PlayGame.GetComplete())
             return;
