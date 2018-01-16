@@ -16,6 +16,8 @@ public class FighterMovement : NetworkBehaviour
     public bool autoMove = false;
 
     bool firingWeapon;
+    bool interacting;
+    bool reloading;
     bool m_focus = true;
 
     [SyncVar]
@@ -30,6 +32,7 @@ public class FighterMovement : NetworkBehaviour
     public float trackTimer;
 
     float fireWeaponTimer;
+    float reloadWeaponTimer;
     float turrentSendTimer = 0.0f;
     float turrentSendDelay = 0.1f;
 
@@ -75,6 +78,10 @@ public class FighterMovement : NetworkBehaviour
         else
         {
             moveSpeed.x *= 0.18f;
+            if (moveSpeed.x < 0.1 && moveSpeed.x > -0.1)
+            {
+                moveSpeed.x = 0;
+            }
         }
 
         // update y movement
@@ -97,6 +104,10 @@ public class FighterMovement : NetworkBehaviour
         else
         {
             moveSpeed.y *= 0.18f;
+            if(moveSpeed.y < 0.1 && moveSpeed.y > -0.1)
+            {
+                moveSpeed.y = 0;
+            }
         }
         
         Vector2 d = new Vector2(moveSpeed.x, moveSpeed.y);
@@ -119,8 +130,8 @@ public class FighterMovement : NetworkBehaviour
     {
         if (fc.alive && Time.time > trackTimer && GetComponent<Rigidbody2D>().velocity.magnitude > 0.001f)
         {
-            GameObject footprint = (GameObject)GameObject.Instantiate(tracks, transform.position, TrackRotate(GetComponent<Rigidbody2D>().velocity));
-            GameObject.Destroy(footprint, 1.5f);
+            GameObject footprint = Instantiate(tracks, transform.position, TrackRotate(GetComponent<Rigidbody2D>().velocity));
+            Destroy(footprint, 1.5f);
             trackTimer = Time.time + 0.25f;
         }
 
@@ -157,19 +168,41 @@ public class FighterMovement : NetworkBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (!interacting)
+            {
+                interacting = true;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            if (interacting)
+            {
+                interacting = false;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (!reloading)
+            {
+                reloading = true;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.R))
+        {
+            if (reloading)
+            {
+                reloading = false;
+            }
+        }
+
         if (Input.GetKey(KeyCode.F1))
         {
             fc.CmdKillSelf();
-        }
-
-        if (Input.GetKey(KeyCode.E))
-        {
-            interactZone.CmdInteract();
-        }
-
-        if (Input.GetKey(KeyCode.R))
-        {
-            fc.CmdReload();
         }
 
         // keep camera on me
@@ -197,6 +230,16 @@ public class FighterMovement : NetworkBehaviour
         {
             FireWeapon();
         }
+
+        if (interacting)
+        {
+            interactZone.CmdInteract();
+        }
+
+        if (reloading)
+        {
+            Reload();
+        }
     }
 
     void FireWeapon()
@@ -205,6 +248,15 @@ public class FighterMovement : NetworkBehaviour
         {
             fireWeaponTimer = Time.time + fc.gunController.EquippedGun.fireRate;
             fc.CmdFire();
+        }
+    }
+
+    void Reload()
+    {
+        if (Time.time > reloadWeaponTimer)
+        {
+            reloadWeaponTimer = Time.time + fc.gunController.EquippedGun.reloadRate;
+            fc.CmdReload();
         }
     }
 

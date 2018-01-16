@@ -11,6 +11,7 @@ public class GunType : ScriptableObject
 
     public int startMaxAmmo;
     public int extMaxAmmo;
+    public float reloadRate;
 
     public float fireRate;
     public float shotSpeed;
