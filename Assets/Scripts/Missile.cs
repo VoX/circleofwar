@@ -37,7 +37,6 @@ public class Missile : NetworkBehaviour {
 	[ServerCallback]
 	void OnTriggerEnter2D(Collider2D collider)
 	{
-        Debug.Log("name: " + gameObject.name + ", collider: " + collider.name);
 		if (deathTimer == 0)
 			return;
 		

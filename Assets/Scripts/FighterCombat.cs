@@ -34,6 +34,9 @@ public class FighterCombat : NetworkBehaviour
     public bool alive = true;
 
     [SyncVar]
+    public bool sprinting = false;
+
+    [SyncVar]
     public string fighterName;
 
     [SyncVar]
@@ -50,7 +53,7 @@ public class FighterCombat : NetworkBehaviour
         ft = newFT;
         fighterType = ft.fighterTypeName;
         health = ft.maxHealth;
-        energy = 0;
+        energy = ft.maxEnergy;
         fighterName = Guid.NewGuid().ToString().Substring(0,8);
         team = "team-" + fighterName;
 
@@ -84,11 +87,11 @@ public class FighterCombat : NetworkBehaviour
         // energy recharges over time
         if (Time.time > regenTimer)
         {
-            if (energy < 100)
+            if (energy < ft.maxEnergy && !sprinting)
             {
                 energy += ft.energyRegen;
             }
-            regenTimer = Time.time + 1.0f;
+            regenTimer = Time.time + 0.1f;
         }
 
     }

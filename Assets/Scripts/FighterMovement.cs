@@ -31,6 +31,7 @@ public class FighterMovement : NetworkBehaviour
 
     public float trackTimer;
 
+    float sprintTimer;
     float fireWeaponTimer;
     float reloadWeaponTimer;
     float turrentSendTimer = 0.0f;
@@ -58,21 +59,59 @@ public class FighterMovement : NetworkBehaviour
             GetComponent<Rigidbody2D>().angularDrag = 5;
             return;
         }
+        if(fc.sprinting)
+        {
+            if(sprintTimer == 0)
+            {
+                sprintTimer = fc.ft.sprintRate;
+            }
+            if(fc.energy < fc.ft.sprintEnergy)
+            {
+                fc.sprinting = false;
+            }
+            else if(Time.time > sprintTimer)
+            {
+                fc.energy -= fc.ft.sprintEnergy;
+                sprintTimer = Time.time + fc.ft.sprintRate;
+            }
+        }
         // update x movement
         if (moving.x > 0)
         {
-            moveSpeed.x += fc.ft.acceleration;
-            if (moveSpeed.x >= fc.ft.topRunSpeed)
+            if (!fc.sprinting)
             {
-                moveSpeed.x = fc.ft.topRunSpeed;
+                moveSpeed.x += fc.ft.acceleration;
+                if (moveSpeed.x >= fc.ft.topRunSpeed)
+                {
+                    moveSpeed.x = fc.ft.topRunSpeed;
+                }
+            }
+            else if (fc.sprinting)
+            {
+                moveSpeed.x += (1.8f * fc.ft.acceleration);
+                if (moveSpeed.x >= fc.ft.topSprintSpeed)
+                {
+                    moveSpeed.x = fc.ft.topSprintSpeed;
+                }
             }
         }
         else if (moving.x < 0)
         {
-            moveSpeed.x -= fc.ft.acceleration;
-            if (moveSpeed.x <= -fc.ft.topRunSpeed)
+            if (!fc.sprinting)
             {
-                moveSpeed.x = -fc.ft.topRunSpeed;
+                moveSpeed.x -= fc.ft.acceleration;
+                if (moveSpeed.x <= -fc.ft.topRunSpeed)
+                {
+                    moveSpeed.x = -fc.ft.topRunSpeed;
+                }
+            }
+            else if (fc.sprinting)
+            {
+                moveSpeed.x -= (1.8f * fc.ft.acceleration);
+                if (moveSpeed.x <= -fc.ft.topSprintSpeed)
+                {
+                    moveSpeed.x = -fc.ft.topSprintSpeed;
+                }
             }
         }
         else
@@ -87,18 +126,40 @@ public class FighterMovement : NetworkBehaviour
         // update y movement
         if (moving.y > 0)
         {
-            moveSpeed.y += fc.ft.acceleration;
-            if (moveSpeed.y >= fc.ft.topRunSpeed)
+            if (!fc.sprinting)
             {
-                moveSpeed.y = fc.ft.topRunSpeed;
+                moveSpeed.y += fc.ft.acceleration;
+                if (moveSpeed.y >= fc.ft.topRunSpeed)
+                {
+                    moveSpeed.y = fc.ft.topRunSpeed;
+                }
+            }
+            else if (fc.sprinting)
+            {
+                moveSpeed.y += (1.8f * fc.ft.acceleration);
+                if (moveSpeed.y >= fc.ft.topSprintSpeed)
+                {
+                    moveSpeed.y = fc.ft.topSprintSpeed;
+                }
             }
         }
         else if (moving.y < 0)
         {
-            moveSpeed.y -= fc.ft.acceleration;
-            if (moveSpeed.y <= -fc.ft.topRunSpeed)
+            if (!fc.sprinting)
             {
-                moveSpeed.y = -fc.ft.topRunSpeed;
+                moveSpeed.y -= fc.ft.acceleration;
+                if (moveSpeed.y <= -fc.ft.topRunSpeed)
+                {
+                    moveSpeed.y = -fc.ft.topRunSpeed;
+                }
+            }
+            else if (fc.sprinting)
+            {
+                moveSpeed.y -= (1.8f * fc.ft.acceleration);
+                if (moveSpeed.y <= -fc.ft.topSprintSpeed)
+                {
+                    moveSpeed.y = -fc.ft.topSprintSpeed;
+                }
             }
         }
         else
@@ -108,7 +169,7 @@ public class FighterMovement : NetworkBehaviour
             {
                 moveSpeed.y = 0;
             }
-        }
+        }            
         
         Vector2 d = new Vector2(moveSpeed.x, moveSpeed.y);
         GetComponent<Rigidbody2D>().velocity = d;
@@ -148,6 +209,22 @@ public class FighterMovement : NetworkBehaviour
         if (!fc.alive)
         {
             return;
+        }
+
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if(!fc.sprinting)
+            {
+                fc.sprinting = true;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            if (fc.sprinting)
+            {
+                fc.sprinting = false;
+            }
         }
 
         HandlePlayerMovement();
@@ -339,7 +416,7 @@ public class FighterMovement : NetworkBehaviour
             movement.Normalize();
 
             if (fc.gunController.ammo == 0)
-                fc.gunController.Reload();
+                Reload();
 
             Walk(movement);
             autoMoveTimer = Time.time + Random.Range(.5f, 4f);
