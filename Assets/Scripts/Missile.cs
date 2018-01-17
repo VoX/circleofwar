@@ -59,7 +59,7 @@ public class Missile : NetworkBehaviour {
 		}
 		
 		// destroy missile
-		if (destroyMe)
+		if (destroyMe || collider.gameObject.layer == 0)
 		{
 			deathTimer = 0;
 			NetworkServer.Destroy(this.gameObject);

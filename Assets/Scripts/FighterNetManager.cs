@@ -28,7 +28,7 @@ public class FighterNetManager : NetworkManager
         {
             networkAddress = "0.0.0.0";
             networkPort = port;
-            Debug.Log("Creating match [" +networkAddress + ":" + networkPort + "]");
+            Debug.Log("Creating match [" + networkAddress + ":" + networkPort + "]");
             mode = "server";
             StartServer();
         }
@@ -49,7 +49,7 @@ public class FighterNetManager : NetworkManager
             }
             else
             {
-                networkAddress = "localhost";
+                networkAddress = "0.0.0.0";
             }
             networkPort = port;
             Debug.Log("Joining server [" + networkAddress + ":" + networkPort + "]");
