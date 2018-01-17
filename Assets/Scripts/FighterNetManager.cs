@@ -49,7 +49,7 @@ public class FighterNetManager : NetworkManager
             }
             else
             {
-                networkAddress = "0.0.0.0";
+                networkAddress = "localhost";
             }
             networkPort = port;
             Debug.Log("Joining server [" + networkAddress + ":" + networkPort + "]");
