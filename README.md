@@ -31,3 +31,6 @@ The bonuses conferred by a class are negligible at the onset of a round, but may
 ⋅ Bonuses to health and armor, slow
 * stealth (potential)
 ⋅ Line of sight abilities
+
+## live
+Follow development [here](http://core2.bitvox.me/cow/) 
