@@ -2,84 +2,69 @@
 using UnityEditor;
 using System.Diagnostics;
 using System.IO;
+using System;
 
 public static class MultiplayersBuildAndRun {
 
-	[MenuItem("File/Run Multiplayer/Windows/2 Players")]
+    [MenuItem("File/Run Multiplayer/Start Server")]
+    static void StartServer()
+    {
+        Cleanup();
+        Build.BuildWindows();
+        RunWindowsServer();
+    }
+
+    [MenuItem("File/Run Multiplayer/2 Players")]
 	static void PerformWin64Build2 (){
-		PerformWin64Build (2);
-	}
+        Cleanup();
+        Build.BuildWindows();
+        RunWindowsServer();
+        RunWindowsClient();
+        RunWindowsClient();
+    }
 
-	[MenuItem("File/Run Multiplayer/Windows/3 Players")]
+	[MenuItem("File/Run Multiplayer/3 Players")]
 	static void PerformWin64Build3 (){
-		PerformWin64Build (3);
-	}
+        Cleanup();
+        Build.BuildWindows();
+        RunWindowsServer();
+        RunWindowsClient();
+        RunWindowsClient();
+        RunWindowsClient();
+    }
 
-	[MenuItem("File/Run Multiplayer/Windows/4 Players")]
-	static void PerformWin64Build4 (){
-		PerformWin64Build (4);
-	}
+    [MenuItem("File/Run Multiplayer/Cleanup")]
+    static void Cleanup()
+    {
+        RunProc("C:\\Windows\\System32\\taskkill.exe", "/F /IM circleofwar.exe");
+    }
 
-	static void PerformWin64Build (int playerCount)
+    static void RunProc(string path, string arguments)
+    {
+        var proc = new Process();
+        proc.StartInfo.FileName = path;
+        UnityEngine.Debug.Log("Run:" + proc.StartInfo.FileName);
+        proc.StartInfo.Arguments = arguments;
+        proc.StartInfo.RedirectStandardOutput = true;
+        proc.StartInfo.UseShellExecute = false;
+        proc.Exited += new EventHandler((o, e) => {
+            UnityEngine.Debug.Log(proc.StartInfo.FileName + "finished with code " + proc.ExitCode + ":" + proc.StandardOutput.ReadToEnd());
+        });
+        proc.Start();
+    }
+
+    static void RunWindowsWithArguments(string arguments)
+    {
+        RunProc(Directory.GetParent(Application.dataPath).FullName + "\\build\\windows\\circleofwar.exe", arguments);
+    }
+
+    static void RunWindowsServer()
+    {
+        RunWindowsWithArguments("-batchmode -nographics");
+    }
+
+    static void RunWindowsClient()
 	{
-		EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows);
-		for (int i = 1; i <= playerCount; i++) {
-            string path = Directory.GetCurrentDirectory() + "Builds/Win64/" + GetProjectName() + i.ToString();
-            //build player
-            BuildPipeline.BuildPlayer (GetScenePaths (), path + "/" + GetProjectName() + i.ToString() + ".exe", BuildTarget.StandaloneWindows64, BuildOptions.None);
-
-            //run each build
-            var proc = new Process();
-            proc.StartInfo.FileName = (path + "/" + GetProjectName() + i.ToString() + ".exe");
-            UnityEngine.Debug.Log(proc.StartInfo.FileName);
-            //build1 is server
-            if (i == 1)
-                proc.StartInfo.Arguments = "-batchmode";
-            proc.Start();
-        }
-	}
-
-	[MenuItem("File/Run Multiplayer/Mac OSX/2 Players")]
-	static void PerformOSXBuild2 (){
-		PerformOSXBuild (2);
-	}
-
-	[MenuItem("File/Run Multiplayer/Mac OSX/3 Players")]
-	static void PerformOSXBuild3 (){
-		PerformOSXBuild (3);
-	}
-
-	[MenuItem("File/Run Multiplayer/Mac OSX/4 Players")]
-	static void PerformOSXBuild4 (){
-		PerformOSXBuild (4);
-	}
-
-	static void PerformOSXBuild (int playerCount)
-	{
-		EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTarget.StandaloneOSX);
-		for (int i = 1; i <= playerCount; i++) {
-			BuildPipeline.BuildPlayer (GetScenePaths (), "Builds/OSX/" + GetProjectName () + i.ToString() + ".app", BuildTarget.StandaloneOSX, BuildOptions.AutoRunPlayer);
-		}
-
-	}
-
-
-	static string GetProjectName()
-	{
-		string[] s = Application.dataPath.Split('/');
-		return s[s.Length - 2];
-	}
-
-	static string[] GetScenePaths()
-	{
-		string[] scenes = new string[EditorBuildSettings.scenes.Length];
-
-		for(int i = 0; i < scenes.Length; i++)
-		{
-			scenes[i] = EditorBuildSettings.scenes[i].path;
-		}
-
-		return scenes;
-	}
-
+        RunWindowsWithArguments("");
+    }
 }

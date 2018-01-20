@@ -5,21 +5,21 @@ class Build
     static string[] scenes = {"Assets/Scenes/Title.unity",
                             "Assets/scenes/Royale.unity"};
 
-    static void BuildWebGl()
+    public static void BuildWebGl()
     {
         string pathToDeploy = "build/webgl/";
 
         BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.WebGL, BuildOptions.None);
     }
 
-    static void BuildWindows()
+    public static void BuildWindows()
     {
         string pathToDeploy = "build/windows/circleofwar.exe";
 
         BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.StandaloneWindows, BuildOptions.None);
     }
 
-    static void BuildLinux()
+    public static void BuildLinux()
     {
         string pathToDeploy = "build/linux/circleofwar.x86_64";
 

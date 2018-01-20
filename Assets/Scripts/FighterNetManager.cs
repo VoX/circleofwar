@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
@@ -11,33 +12,37 @@ public class FighterNetManager : NetworkManager
     [SerializeField]
     GunType[] weapons;
 
-    int port = 34920;
-
-    bool IsHeadless()
+    bool UseWebSockets()
     {
-        return SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
+        return Environment.GetCommandLineArgs().Any(x => x.Contains("-usewebsockets"));
+    }
+
+    bool IsServer()
+    {
+        return Environment.GetCommandLineArgs().Any(x=>x.Contains("-batchmode"));
     }
 
     string weburl;
 
     void Start()
     {
+        networkPort = 34920;
+        networkAddress = "127.0.0.1";
         singleton = this;
         weburl = Application.absoluteURL;
-        if (IsHeadless())
+
+        if (IsServer())
         {
+            useWebSockets = UseWebSockets();
             networkAddress = "0.0.0.0";
-            networkPort = port;
             Debug.Log("Creating match [" + networkAddress + ":" + networkPort + "]");
             mode = "server";
             StartServer();
         }
         else if (Application.isEditor)
         {
-            Debug.Log("Running Local Server");
-            mode = "local";
-            StartHost();
-
+            Debug.Log("Running Manual Editor Mode");
+            mode = "editor";
         }
         else
         {
@@ -51,7 +56,6 @@ public class FighterNetManager : NetworkManager
             {
                 networkAddress = "localhost";
             }
-            networkPort = port;
             Debug.Log("Joining server [" + networkAddress + ":" + networkPort + "]");
             mode = "client";
             StartClient();
@@ -61,7 +65,7 @@ public class FighterNetManager : NetworkManager
     public string mode;
     void OnGUI()
     {
-        GUI.Label(new Rect(10, 10, 1000, 20), "connection:" + networkAddress + ":" + port + " mode:" + mode);
+        GUI.Label(new Rect(10, 10, 1000, 20), "connection:" + networkAddress + ":" + networkPort + " mode:" + mode);
     }
 
     Vector2 GetSpawn()
