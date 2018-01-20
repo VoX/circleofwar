@@ -6,21 +6,21 @@ using System.Collections.Generic;
 public class PlayGame : NetworkBehaviour {
 
 	static public PlayGame singleton;
-    IEnumerable<FighterCombat> fighters;
+    IEnumerable<FighterController> fighters;
 
     [SyncVar]
     bool complete = false;
 
     private void Start()
     {
-        fighters = FindObjectsOfType<FighterCombat>();
+        fighters = FindObjectsOfType<FighterController>();
         singleton = this;
     }
 
     void Awake () 
 	{
-		
-	}
+        fighters = FindObjectsOfType<FighterController>();
+    }
 			
 	public static bool GetComplete()
 	{
@@ -34,8 +34,8 @@ public class PlayGame : NetworkBehaviour {
         for (int i = 0; i < 10; i++)
         {
             var autoFighter = FighterNetManager.singleton.SpawnPlayer();
-            FighterMovement fm = autoFighter.GetComponent<FighterMovement>();
-            fm.autoMove = true;
+            var fc = autoFighter.GetComponent<FighterController>();
+            fc.autoMove = true;
             NetworkServer.Spawn(autoFighter);
         }
     }
@@ -55,10 +55,10 @@ public class PlayGame : NetworkBehaviour {
 	{
         if(fighters.Count() < 1)
         {
-            fighters = FindObjectsOfType<FighterCombat>();
+            fighters = FindObjectsOfType<FighterController>();
         }
 
-        if (fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterCombat>().alive) <= 1)
+        if (fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterController>().alive) <= 1)
         {
             singleton.complete = true;
         }
@@ -67,7 +67,7 @@ public class PlayGame : NetworkBehaviour {
         {
             SpawnTestPlayers();
             SpawnWeapons();
-            fighters = FindObjectsOfType<FighterCombat>();
+            fighters = FindObjectsOfType<FighterController>();
         }
 	}
 }

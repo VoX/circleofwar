@@ -5,7 +5,7 @@ public class HUD : NetworkBehaviour {
 
 	Texture box;
 
-    public FighterCombat fc;
+    public FighterController fc;
     public AmmoUI aUI;
 	
 	float damageTimer;
@@ -42,7 +42,7 @@ public class HUD : NetworkBehaviour {
 		var myTeam = "-";
 		if (NetworkClient.active && ClientScene.localPlayers.Count > 0 && ClientScene.localPlayers[0].gameObject != null)
 		{
-			FighterCombat localPlayerFc = ClientScene.localPlayers[0].gameObject.GetComponent<FighterCombat>();
+            FighterController localPlayerFc = ClientScene.localPlayers[0].gameObject.GetComponent<FighterController>();
 			myTeam = localPlayerFc.team;
 		}
 		
@@ -93,11 +93,11 @@ public class HUD : NetworkBehaviour {
 
         GUI.color = Color.grey;
         GUI.Box(new Rect(Screen.width - 80, Screen.height - 65, 80, 65), "");
-        if (fc.gunController.EquippedGun != null)
+        if (fc.EquippedGun != null)
         {
             GUI.color = Color.white;
-            GUI.Label(new Rect(Screen.width-75, Screen.height-60, 75, 30), fc.gunController.EquippedGun.gunTypeName);
-            GUI.Label(new Rect(Screen.width-75, Screen.height-30, 75, 30), fc.gunController.ammo + "/" + fc.gunController.maxAmmo);
+            GUI.Label(new Rect(Screen.width-75, Screen.height-60, 75, 30), fc.EquippedGun.gunTypeName);
+            GUI.Label(new Rect(Screen.width-75, Screen.height-30, 75, 30), fc.ammo + "/" + fc.maxAmmo);
         }
 
 

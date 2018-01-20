@@ -43,6 +43,7 @@ public class FighterNetManager : NetworkManager
         {
             Debug.Log("Running Manual Editor Mode");
             mode = "editor";
+            StartHost();
         }
         else
         {
@@ -81,7 +82,7 @@ public class FighterNetManager : NetworkManager
     {
         // spawn random fighter
         GameObject fighter = (GameObject)Instantiate(NetworkManager.singleton.playerPrefab, GetSpawn(), Quaternion.identity);
-        FighterCombat fc = fighter.GetComponent<FighterCombat>();
+        var fc = fighter.GetComponent<FighterController>();
         fc.InitializeFromFighterType(FighterTypeManager.Random());
         return fighter;
     }

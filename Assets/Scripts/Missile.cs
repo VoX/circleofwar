@@ -42,7 +42,7 @@ public class Missile : NetworkBehaviour {
 		
 		bool destroyMe = false;		
 		
-		FighterCombat fc = collider.gameObject.GetComponentInParent<FighterCombat>();
+		var fc = collider.gameObject.GetComponentInParent<FighterController>();
 		if (fc != null)
 		{
 			int side = GetHitSide(startPos, collider.gameObject.transform.position, collider.gameObject.transform.right);
