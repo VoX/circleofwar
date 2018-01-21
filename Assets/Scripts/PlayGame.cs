@@ -35,7 +35,6 @@ public class PlayGame : NetworkBehaviour {
         {
             var autoFighter = FighterNetManager.singleton.SpawnPlayer();
             var fc = autoFighter.GetComponent<FighterController>();
-            fc.autoMove = true;
             NetworkServer.Spawn(autoFighter);
         }
     }
@@ -51,7 +50,7 @@ public class PlayGame : NetworkBehaviour {
     }
 
     [ServerCallback]
-    void Update()
+    void FixedUpdate()
 	{
         if(fighters.Count() < 1)
         {
@@ -60,6 +59,10 @@ public class PlayGame : NetworkBehaviour {
 
         if (fighters.Count() > 1 && fighters.Count(x => x != null && x.GetComponent<FighterController>().alive) <= 1)
         {
+            if(singleton.complete == false)
+            {
+                Debug.Log("Complete");
+            }
             singleton.complete = true;
         }
 
