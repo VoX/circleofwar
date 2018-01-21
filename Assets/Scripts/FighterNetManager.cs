@@ -19,7 +19,7 @@ public class FighterNetManager : NetworkManager
 
     bool IsServer()
     {
-        return Environment.GetCommandLineArgs().Any(x=>x.Contains("-batchmode"));
+        return Environment.GetCommandLineArgs().Any(x=>x.Contains("-batchmode")) || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
     }
 
     string weburl;
