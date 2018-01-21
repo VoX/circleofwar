@@ -567,11 +567,6 @@ public class FighterController : NetworkBehaviour
 
     void UpdateClient()
     {
-        if (isLocalPlayer)
-        {
-            UpdateCamera();
-        }
-
         if (alive && Time.time > trackTimer && physBody.velocity.magnitude > 0.001f)
         {
             GameObject footprint = Instantiate(tracks, transform.position, TrackRotate(physBody.velocity));
@@ -585,6 +580,8 @@ public class FighterController : NetworkBehaviour
             upperBody.transform.rotation = Quaternion.Euler(trotationVector);
             return;
         }
+
+        UpdateCamera();
 
         if (!m_focus)
             return;

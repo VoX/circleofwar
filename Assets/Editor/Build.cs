@@ -16,7 +16,7 @@ class Build
     {
         string pathToDeploy = "build/windows/circleofwar.exe";
 
-        BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.StandaloneWindows, BuildOptions.None);
+        BuildPipeline.BuildPlayer(scenes, pathToDeploy, BuildTarget.StandaloneWindows, BuildOptions.AllowDebugging);
     }
 
     public static void BuildLinux()
