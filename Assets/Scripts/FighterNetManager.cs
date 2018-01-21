@@ -57,6 +57,10 @@ public class FighterNetManager : NetworkManager
             {
                 networkAddress = "localhost";
             }
+            if(Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                useWebSockets = true;
+            }
             Debug.Log("Joining server [" + networkAddress + ":" + networkPort + "]");
             mode = "client";
             StartClient();
