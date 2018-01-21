@@ -63,7 +63,7 @@ public class HUD : NetworkBehaviour {
         if (fc.alive && fc.ft != null)
 		{
 			DrawBar (teamColor, pos, 40, fc.health, fc.ft.maxHealth);
-			DrawBar (Color.yellow, pos, 34, fc.energy, fc.ft.maxEnergy);
+			DrawBar (Color.yellow, pos, 34, (int)fc.energy, fc.ft.maxEnergy);
 		}
 		else
 		{

@@ -11,6 +11,9 @@ public class PlayGame : NetworkBehaviour {
     [SyncVar]
     bool complete = false;
 
+    [SyncVar]
+    bool started = false;
+
     private void Start()
     {
         fighters = FindObjectsOfType<FighterController>();
@@ -20,6 +23,7 @@ public class PlayGame : NetworkBehaviour {
     void Awake () 
 	{
         fighters = FindObjectsOfType<FighterController>();
+        SpawnWeapons();
     }
 			
 	public static bool GetComplete()
@@ -39,7 +43,7 @@ public class PlayGame : NetworkBehaviour {
         }
     }
 
-    [Server]
+    [ServerCallback]
     void SpawnWeapons()
     {
         for (int i = 0; i < 20; i++)
@@ -52,6 +56,16 @@ public class PlayGame : NetworkBehaviour {
     [ServerCallback]
     void FixedUpdate()
 	{
+        if(!started && (fighters.Count() > 0 || Application.isEditor))
+        {
+            started = true;
+            SpawnWeapons();
+            if (Application.isEditor)
+            {
+                SpawnTestPlayers();
+            }
+        }
+
         if(fighters.Count() < 1)
         {
             fighters = FindObjectsOfType<FighterController>();
@@ -68,8 +82,6 @@ public class PlayGame : NetworkBehaviour {
 
         if (fighters.Count() == 1)
         {
-            SpawnTestPlayers();
-            SpawnWeapons();
             fighters = FindObjectsOfType<FighterController>();
         }
 	}

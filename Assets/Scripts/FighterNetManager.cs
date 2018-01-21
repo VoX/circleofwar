@@ -14,7 +14,7 @@ public class FighterNetManager : NetworkManager
 
     bool UseWebSockets()
     {
-        return Environment.GetCommandLineArgs().Any(x => x.Contains("-usewebsockets")) || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
+        return Environment.GetCommandLineArgs().Any(x => x.Contains("-usewebsockets")) || Application.platform == RuntimePlatform.LinuxPlayer;
     }
 
     bool IsServer()

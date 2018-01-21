@@ -51,7 +51,7 @@ public class FighterController : NetworkBehaviour
     [SyncVar]
     public int health = 100;
 
-    public int energy = 100;
+    public float energy = 0f;
 
     [SyncVar]
     public bool alive = true;
@@ -67,8 +67,6 @@ public class FighterController : NetworkBehaviour
     [SyncVar]
     public string team;
 
-    float regenTimer;
-
     // server movement
     Vector2 moveDirection;
 
@@ -81,8 +79,6 @@ public class FighterController : NetworkBehaviour
     Rigidbody2D physBody;
 
     public float trackTimer;
-
-    float sprintTimer;
     float fireWeaponTimer;
 
     // Use this for initialization
@@ -242,7 +238,8 @@ public class FighterController : NetworkBehaviour
         {
             health = 0;
             alive = false;
-            physBody.velocity = Vector2.zero;
+            physBody.drag = 100;
+            physBody.angularDrag = 100;
             // play explosion!
             EventDie();
         }
@@ -276,30 +273,17 @@ public class FighterController : NetworkBehaviour
         HandleClientEnergy();
     }
 
+    [Client]
     void HandleClientEnergy()
     {
-        if (sprintTimer == 0)
+        var newenergy = energy + (sprinting ? -ft.sprintRate : ft.energyRegenRate);
+        if (newenergy > 0 && newenergy < ft.maxEnergy)
         {
-            sprintTimer = ft.sprintRate;
+            energy = newenergy;
         }
         if (energy < ft.sprintEnergy)
         {
             sprinting = false;
-        }
-        else if (Time.time > sprintTimer)
-        {
-            energy -= ft.sprintEnergy;
-            sprintTimer = Time.time + ft.sprintRate;
-        }
-
-        // energy recharges over time
-        if (Time.time > regenTimer)
-        {
-            if (energy < ft.maxEnergy && !sprinting)
-            {
-                energy += ft.energyRegen;
-            }
-            regenTimer = Time.time + 0.1f;
         }
     }
 
@@ -310,8 +294,8 @@ public class FighterController : NetworkBehaviour
             return;
         }
 
-        physBody.drag = moveDirection.sqrMagnitude > .1f ? 12 : 5;
-        physBody.AddForce(moveDirection * ft.acceleration * (sprinting ? 1500 : 1000));
+        physBody.drag = moveDirection.sqrMagnitude > .1f ? 20 : 5;
+        physBody.AddForce(moveDirection * ft.acceleration * (sprinting ? 4000 : 2000));
     }
 
     void FireWeapon()
@@ -345,7 +329,7 @@ public class FighterController : NetworkBehaviour
     [ClientCallback]
     void Update()
     {
-        if (alive && Time.time > trackTimer && physBody.velocity.magnitude > 0.001f)
+        if (alive && Time.time > trackTimer && physBody.velocity.magnitude > 0.01f)
         {
             GameObject footprint = Instantiate(tracks, transform.position, TrackRotate(physBody.velocity));
             Destroy(footprint, 1.5f);
@@ -421,7 +405,7 @@ public class FighterController : NetworkBehaviour
         float angle = Mathf.Atan2(mouse_pos.y, mouse_pos.x) * Mathf.Rad2Deg;
         Vector3 rotationVector = new Vector3(0, 0, angle);
         upperBody.transform.rotation = Quaternion.Euler(rotationVector);
-        physBody.rotation = angle;
+        physBody.MoveRotation(angle);
 
         if (firingWeapon)
         {
