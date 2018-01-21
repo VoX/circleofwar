@@ -165,6 +165,7 @@ public class FighterController : NetworkBehaviour
     {
         physBody = GetComponent<Rigidbody2D>();
         maxAmmo = equippedGun.startMaxAmmo;
+        physBody.centerOfMass = new Vector2(0, 0);
     }
 
     public void Fire(string team)
@@ -369,7 +370,7 @@ public class FighterController : NetworkBehaviour
             }
         }
 
-        HandlePlayerMovement();
+        HandleMovementInput();
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -413,7 +414,7 @@ public class FighterController : NetworkBehaviour
         }
     }
 
-    void HandlePlayerMovement()
+    void HandleMovementInput()
     {
         float xMoveForce = Input.GetAxis("Horizontal");
         float yMoveForce = Input.GetAxis("Vertical");
