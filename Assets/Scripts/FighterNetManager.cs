@@ -14,12 +14,12 @@ public class FighterNetManager : NetworkManager
 
     bool UseWebSockets()
     {
-        return Environment.GetCommandLineArgs().Any(x => x.Contains("-usewebsockets"));
+        return Environment.GetCommandLineArgs().Any(x => x.Contains("-usewebsockets")) || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
     }
 
     bool IsServer()
     {
-        return Environment.GetCommandLineArgs().Any(x=>x.Contains("-batchmode")) || SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null;
+        return Environment.GetCommandLineArgs().Any(x=>x.Contains("-batchmode"));
     }
 
     string weburl;
