@@ -35,7 +35,7 @@ public class FighterNetManager : NetworkManager
         {
             useWebSockets = UseWebSockets();
             networkAddress = "0.0.0.0";
-            Debug.Log("Creating match [" + networkAddress + ":" + networkPort + "]");
+            Debug.Log("Creating match [" + networkAddress + ":" + networkPort + "] useWebSockets:" + useWebSockets);
             mode = "server";
             StartServer();
         }
@@ -57,10 +57,7 @@ public class FighterNetManager : NetworkManager
             {
                 networkAddress = "localhost";
             }
-            if(Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                useWebSockets = true;
-            }
+
             Debug.Log("Joining server [" + networkAddress + ":" + networkPort + "]");
             mode = "client";
             StartClient();

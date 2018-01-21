@@ -295,7 +295,7 @@ public class FighterController : NetworkBehaviour
         }
 
         physBody.drag = moveDirection.sqrMagnitude > .1f ? 20 : 5;
-        physBody.AddForce(moveDirection * ft.acceleration * (sprinting ? 4000 : 2000));
+        physBody.AddForce(moveDirection * ft.acceleration * (sprinting ? 3250 : 2000));
     }
 
     void FireWeapon()

@@ -6,16 +6,8 @@ using System;
 
 public static class MultiplayersBuildAndRun {
 
-    [MenuItem("File/Run Multiplayer/Start Server")]
-    static void StartServer()
-    {
-        Cleanup();
-        Build.BuildWindows();
-        RunWindowsServer();
-    }
-
-    [MenuItem("File/Run Multiplayer/2 Players")]
-	static void PerformWin64Build2 (){
+    [MenuItem("File/Run Windows Multiplayer")]
+	static void TestWindowsBuild (){
         Cleanup();
         Build.BuildWindows();
         RunWindowsServer();
@@ -23,32 +15,30 @@ public static class MultiplayersBuildAndRun {
         RunWindowsClient();
     }
 
-	[MenuItem("File/Run Multiplayer/3 Players")]
-	static void PerformWin64Build3 (){
+	[MenuItem("File/Run WebGL Multiplayer")]
+	static void TestWebGlBuild (){
         Cleanup();
         Build.BuildWindows();
-        RunWindowsServer();
-        RunWindowsClient();
-        RunWindowsClient();
-        RunWindowsClient();
+        Build.BuildWebGl();
+        RunWindowsServerWebSockets();
+        RunWebGlClient();
+        RunWebGlClient();
     }
 
-    [MenuItem("File/Run Multiplayer/Cleanup")]
     static void Cleanup()
     {
         RunProc("C:\\Windows\\System32\\taskkill.exe", "/F /IM circleofwar.exe");
     }
 
-    static void RunProc(string path, string arguments)
+    static void RunProc(string path, string arguments, string workingDirectory = null)
     {
         var proc = new Process();
         proc.StartInfo.FileName = path;
         UnityEngine.Debug.Log("Run:" + proc.StartInfo.FileName);
         proc.StartInfo.Arguments = arguments;
-        proc.StartInfo.RedirectStandardOutput = true;
-        proc.StartInfo.UseShellExecute = false;
+        proc.StartInfo.WorkingDirectory = workingDirectory == null ? proc.StartInfo.WorkingDirectory : workingDirectory;
         proc.Exited += new EventHandler((o, e) => {
-            UnityEngine.Debug.Log(proc.StartInfo.FileName + "finished with code " + proc.ExitCode + ":" + proc.StandardOutput.ReadToEnd());
+            UnityEngine.Debug.Log(proc.StartInfo.FileName + "finished with code " + proc.ExitCode);
         });
         proc.Start();
     }
@@ -56,6 +46,11 @@ public static class MultiplayersBuildAndRun {
     static void RunWindowsWithArguments(string arguments)
     {
         RunProc(Directory.GetParent(Application.dataPath).FullName + "\\build\\windows\\circleofwar.exe", arguments);
+    }
+
+    static void RunWindowsServerWebSockets()
+    {
+        RunWindowsWithArguments("-batchmode -nographics -usewebsockets");
     }
 
     static void RunWindowsServer()
@@ -66,5 +61,10 @@ public static class MultiplayersBuildAndRun {
     static void RunWindowsClient()
 	{
         RunWindowsWithArguments("");
+    }
+
+    static void RunWebGlClient()
+    {
+        Process.Start(Directory.GetParent(Application.dataPath).FullName + "\\build\\webgl\\index.html");
     }
 }
