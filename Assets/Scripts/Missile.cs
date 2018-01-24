@@ -9,7 +9,8 @@ public class Missile : NetworkBehaviour {
 	
 	Vector3 startPos;	
 	float deathTimer;
-	float lifeTime = 1.0f;
+    [SerializeField]
+    float lifeTime;
 	
 	public override void OnStartClient()
 	{
@@ -29,7 +30,7 @@ public class Missile : NetworkBehaviour {
 		if (Time.time > deathTimer)
 		{
 			deathTimer = 0;
-			NetworkServer.Destroy(this.gameObject);
+			NetworkServer.Destroy(gameObject);
 		}
 	}
 	
@@ -58,10 +59,10 @@ public class Missile : NetworkBehaviour {
 		}
 		
 		// destroy missile
-		if (destroyMe || collider.gameObject.layer == 0)
+		if (destroyMe || collider.gameObject.layer == 11)
 		{
 			deathTimer = 0;
-			NetworkServer.Destroy(this.gameObject);
+			NetworkServer.Destroy(gameObject);
 		}
 	}
 	

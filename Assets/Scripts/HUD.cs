@@ -93,11 +93,11 @@ public class HUD : NetworkBehaviour {
 
         GUI.color = Color.grey;
         GUI.Box(new Rect(Screen.width - 80, Screen.height - 65, 80, 65), "");
-        if (fc.EquippedGun != null)
+        if (fc.equippedGun != null)
         {
             GUI.color = Color.white;
-            GUI.Label(new Rect(Screen.width-75, Screen.height-60, 75, 30), fc.EquippedGun.gunTypeName);
-            GUI.Label(new Rect(Screen.width-75, Screen.height-30, 75, 30), fc.ammo + "/" + fc.maxAmmo);
+            GUI.Label(new Rect(Screen.width-75, Screen.height-60, 75, 30), fc.equippedGun.gunName);
+            GUI.Label(new Rect(Screen.width-75, Screen.height-30, 75, 30), fc.equippedGun.ammo + "/" + fc.equippedGun.maxAmmo);
         }
 
 

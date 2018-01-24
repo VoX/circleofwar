@@ -8,31 +8,11 @@ public class FighterController : NetworkBehaviour
     bool cooldown;
 
     [SerializeField]
-    GunType equippedGun;
+    public Gun equippedGun;
 
-    [SyncVar]
-    public int ammo;
-    [SyncVar]
-    public int maxAmmo;
-
-    public Transform muzzle;
-
-    float subtractOffset;
-
-    public GunType EquippedGun
-    {
-        get
-        {
-            return equippedGun;
-        }
-        set
-        {
-            this.equippedGun = value;
-            ammo = 0;
-            maxAmmo = equippedGun.startMaxAmmo;
-        }
-    }
-
+    [SerializeField]
+    Transform muzzleLoc;
+    
     public FighterType ft;
 
     public delegate void TakeDamageDelegate(int side, int damage);
@@ -79,13 +59,6 @@ public class FighterController : NetworkBehaviour
     Rigidbody2D physBody;
 
     public float trackTimer;
-    float fireWeaponTimer;
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
 
     void OnTriggerStay2D(Collider2D col)
     {
@@ -120,20 +93,26 @@ public class FighterController : NetworkBehaviour
         if (pickup == null)
             return;
 
-        if (pickup.GetComponent<GunPickup>() != null)
+        if (pickup.GetComponent<Gun>() != null)
         {
-            GunType oldGun = EquippedGun;
+            Gun oldGun = equippedGun;
             if (oldGun != null)
             {
-                GameObject newPickup = Instantiate(oldGun.pickupPrefab, transform.position, Quaternion.identity);
-                NetworkServer.Spawn(newPickup);
-                EquippedGun = pickup.GetComponent<GunPickup>().gun;
-                Destroy(pickup);
+                oldGun.transform.SetParent(null);
+                oldGun.isRendererEnabled = true;
+                oldGun.SetMuzzle(null);
+                
+                equippedGun = pickup.GetComponent<Gun>();
+                equippedGun.transform.SetParent(gameObject.transform);
+                equippedGun.isRendererEnabled = false;
+                equippedGun.SetMuzzle(muzzleLoc);
             }
             else
             {
-                EquippedGun = pickup.GetComponent<GunPickup>().gun;
-                Destroy(pickup);
+                equippedGun = pickup.GetComponent<Gun>();
+                equippedGun.transform.SetParent(gameObject.transform);
+                equippedGun.isRendererEnabled = false;
+                equippedGun.SetMuzzle(muzzleLoc);
             }
         }
     }
@@ -164,53 +143,8 @@ public class FighterController : NetworkBehaviour
     void Awake()
     {
         physBody = GetComponent<Rigidbody2D>();
-        maxAmmo = equippedGun.startMaxAmmo;
         physBody.centerOfMass = new Vector2(0, 0);
     }
-
-    public void Fire(string team)
-    {
-        if (equippedGun != null && ammo > 0)
-        {
-            if (equippedGun.splash) //shotgun or similar
-            {
-                for (int i = 0; i < equippedGun.splashCount; i++)
-                {
-                    switch (equippedGun.splashCount)
-                    {
-                        case 3:
-                            subtractOffset = .5f;
-                            break;
-                        case 4:
-                            subtractOffset = 1f;
-                            break;
-                        case 5:
-                            subtractOffset = 2f;
-                            break;
-                    }
-
-                    GameObject bullet = Instantiate(equippedGun.bulletPrefab, muzzle.position, muzzle.rotation);
-                    bullet.transform.Rotate(new Vector3(0f, 0f, (i - subtractOffset)));
-                    bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.right * equippedGun.shotSpeed;
-                    bullet.GetComponent<Missile>().damage = equippedGun.damage;
-                    bullet.GetComponent<Missile>().team = team;
-                    NetworkServer.Spawn(bullet);
-                }
-            }
-            else //one shot, one bullet
-            {
-                GameObject bullet = Instantiate(equippedGun.bulletPrefab, muzzle.position, muzzle.rotation);
-                bullet.transform.Rotate(new Vector3(0f, 0f, (UnityEngine.Random.Range(-equippedGun.spread, equippedGun.spread))));
-                bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.right * equippedGun.shotSpeed;
-                bullet.GetComponent<Missile>().damage = equippedGun.damage;
-                bullet.GetComponent<Missile>().team = team;
-                NetworkServer.Spawn(bullet);
-            }
-
-            ammo--;
-        }
-    }
-
 
     [Server]
     public void GotHit(int side, int damage, string team)
@@ -254,17 +188,21 @@ public class FighterController : NetworkBehaviour
     [Command]
     public void CmdFire()
     {
-        Fire(team);
+        if(equippedGun == null || !fighterActionsAllowed())
+        {
+            return;
+        }
+        equippedGun.Fire(team);
     }
 
     [Command]
     public void CmdReload()
     {
-        if (!fighterActionsAllowed())
+        if (equippedGun == null || !fighterActionsAllowed())
         {
             return;
         }
-        ammo = maxAmmo;
+        equippedGun.Reload();
     }
     
     [ClientCallback]
@@ -297,15 +235,6 @@ public class FighterController : NetworkBehaviour
 
         physBody.drag = moveDirection.sqrMagnitude > .1f ? 20 : 5;
         physBody.AddForce(moveDirection * ft.acceleration * (sprinting ? 3250 : 2000));
-    }
-
-    void FireWeapon()
-    {
-        if (Time.time > fireWeaponTimer)
-        {
-            fireWeaponTimer = Time.time + EquippedGun.fireRate;
-            CmdFire();
-        }
     }
 
     void OnApplicationFocus(bool value)
@@ -410,7 +339,7 @@ public class FighterController : NetworkBehaviour
 
         if (firingWeapon)
         {
-            FireWeapon();
+            CmdFire();
         }
     }
 

@@ -94,7 +94,7 @@ public class FighterNetManager : NetworkManager
         {
             GunType thisWeapon = weapons[UnityEngine.Random.Range(0, weapons.Length)];
             // spawn random weapon
-            GameObject weapon = Instantiate(thisWeapon.pickupPrefab, GetSpawn(), Quaternion.identity);
+            GameObject weapon = Instantiate(thisWeapon.prefab, GetSpawn(), Quaternion.identity);
             return weapon;
         }
         return null;

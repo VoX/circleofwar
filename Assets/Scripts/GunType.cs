@@ -7,7 +7,7 @@ public class GunType : ScriptableObject
 {
     public string gunTypeName;
     public GameObject bulletPrefab;
-    public GameObject pickupPrefab;
+    public GameObject prefab;
 
     public int startMaxAmmo;
     public int extMaxAmmo;
